@@ -2,9 +2,9 @@
 * Based on [this paper](#) by [Lucy Martinez](https://marti310.github.io/ "Lucy")
   
 ## Usage    
-* Example using `GGR1d.txt`. Save this file as  GGR1d.txt to use it and stay in the same directory. Get into Mape.
+* Example using GGR1d.txt. Save this file as  GGR1d.txt to use it and stay in the same directory. Get into Mape and type:
 
-`read `GGR1d.txt`:`
+``` read `GGR1d.txt:` ```
 
 * The following will be prompted
 
