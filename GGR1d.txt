@@ -1,0 +1,729 @@
+######################################################################
+## GGR1d.txt: Save this file as  GGR1d.txt to use it,                #
+# stay in the                                                        #
+## same directory, get into Maple (by typing: maple <Enter> )        #
+#then type: read `GGR1d.txt`: <Enter>                                #
+## Then follow the instructions given there                          #
+##                                                                   #
+## Written by  Lucy Martinez Rutgers University			        #
+######################################################################
+
+#VERSION OF November 08, 2024
+
+with(Statistics):
+
+
+
+print(`First Written: March 2024: tested for Maple 20 `):
+print():
+print(`This is GGR1d.txt, a Maple package `):
+print(`accompanying Lucy Martinez's  article: `):
+print(`A symbolic computational approach to the generalized gambler's ruin problem in one and two dimensions`):
+
+print(`-------------------------------`):
+
+print(`-------------------------------`):
+print():
+print(`The most current version is available at the url:`):
+print(` https://`):
+print(`Please report all bugs to: lm1154@scarletmail.rutgers.edu  .`):
+print():
+print(`-------------------------------`):
+
+
+print(`For general help, and a list of the MAIN functions,`):
+print(` type "Help();". For specific help type "Help(procedure_name);" `):
+
+print(`-------------------------------`):
+print(`For a list of the simulation (classical game or general) functions type:  HelpSimu();`):
+print(`For a list of the slow (classical game or general) functions type:  HelpSlow();`):
+
+print(`For help with a specific procedure, type "Help(procedure_name);"`):
+print():
+print(`-------------------------------`):
+
+
+HelpSimu:=proc()
+if args=NULL then
+
+print(` The procedures for simulation (classical game) are: GR1d1, GR1d`):
+print(`The procedures for simulation (general moves) are: MyPT, GR1d1G, GR1dG`):
+
+
+else
+ Help(args):
+fi:
+end:
+
+
+
+HelpSlow:=proc()
+if args=NULL then
+
+print(`The procedures for the slow algorithm (classical game) are: GR1dP, GR1dL, GR1dF`):
+print(`The procedures for the slow algorithm (general moves) are: GR1dPG, GR1dLG, GR1dFG`):
+
+else
+ Help(args):
+fi:
+end:
+
+Help:=proc()
+
+if args=NULL then
+
+print(`GGR1d.txt: A Maple package for the generalized 1-dimensional gambler's ruin `):
+print(`The main procedures are: NewGR1dPG, NewGR1dLG, NewGR1dFG`):
+print(`GR1dMom2G, GR1dVG, TestGR1dVG`):
+
+elif nargs=1 and args[1]=GR1dP then 
+print(`GR1dP(N): Inputs a positive integer N and outputs a list L of length N-1 such that L[x] is the probability of exiting the casino with N dollars. Try:`):
+print(`GR1dP(5); `):
+#used to be ProbN
+
+
+elif nargs=1 and args[1]=GR1dL then 
+print(`GR1dL(N): Inputs a positive integer N and outputs a list L of length N-1 such that L[x] is the expected duration in the Casino until exiting (either a loser or winner). Try:`):
+print(`GR1dL(5); `):
+#used to be ExpN
+
+elif nargs=1 and args[1]=GR1dF then
+print(`GR1dF(N,t): Inputs a positive integer N and outputs a list L of length N-1 such that`):
+print(`L[x] is the probability generating function of the duration of the game if`):
+print(`the particle starts at 0<x<N. Try:`):
+print(`GR1dF(5,t); `):
+
+
+elif nargs=1 and args[1]=GR1d1 then 
+print(`GR1d1(x,N): Inputs integers x and N such that 0<=x<=N where x is the location on the discrete line of [0,N], and outputs a list of length two where the first element is 0 (loser) or 1 (winner), followed by the number of times it takes to exit the game. Try:`):
+print(`GR1d1(10,20); `):
+
+
+elif nargs=1 and args[1]=GR1d then 
+print(`GR1d(x,N,K): Inputs integers x,N,K, runs GR1d1(x,N) "K" times, and outputs the ratio of times where it exited a winner followed by the expected duration. Try:`):
+print(`GR1d(10,20,1000); `):
+
+
+
+elif nargs=1 and args[1]=IsP then
+print(`IsP(P): Inputs a table P=[[a1,p1],[a2,p2],...,[ar,pr]] where p1+p2+...+pr=1,`):
+print(`and checks that the ai's are strictly increasing, all probabilities add up to 1,`):
+print(`and that there exists at least one negative ai and one positive aj, outputs`):
+print(`true or false`):
+
+
+elif nargs=1 and args[1]=MyPT then
+print(`MyPT(P): Inputs P=[[a1,p1],[a2,p2],...,[ar,pr]] where p1+p2+...+pr=1, and uses the Maple Sample function to output ai with probability pi. Try: `):
+print(`MyPT([[-1,1/2],[1,1/2]]); `):
+
+
+elif nargs=1 and args[1]=GR1d1G then
+print(`GR1d1G(x,N,P): Inputs a positive integers x,N such that 0<x<N and a probability table P,`):
+print(`P=[[a1,p1],[a2,p2],...,[ar,pr]] where p1+p2+...+pr=1, such that `):
+print(`the particle moves ai times with probability pi, and outputs where it ended on the line`):
+print(`followed by the number of times it takes to exit the game. Try: `):
+print(`GR1d1G(3,5,[[-1,1/2],[1,1/2]]); `):
+
+
+elif nargs=1 and args[1]=GR1dG then
+print(`GR1dG(x,N,P,K): Inputs positive integers x,N, runs GR1d1G(x,N,P) "K" times, and outputs `):
+print(`the ratio of times where the particle ended at >=N, followed by the expected duration. Try:`):
+print(`GR1dG(3,5,[[-1,1/2],[1,1/2]],1000); `):
+ 
+
+elif nargs=1 and args[1]=GR1dPG then
+print(`GR1dPG(N,P): Inputs positive integer N and a probability table P where`):
+print(`P=[[a1,p1],[a2,p2],...,[ar,pr]] with p1+p2+...+pr=1, such that the particle moves`):
+print(`ai times with probability pi, and outputs a list L of length N-1 such that`):
+print(`L[x] is the probability of exiting the game with at least N dollars. Try:`):
+print(`GR1dPG(5,[[-1,1/2],[1,1/2]]); `):
+
+
+elif nargs=1 and args[1]=GR1dLG then
+print(`GR1dLG(N,P): Inputs positive integer N and a probability table P where`):
+print(`P=[[a1,p1],[a2,p2],...,[ar,pr]] with p1+p2+...+pr=1, such that the particle moves`):
+print(`ai times with probability pi, and outputs a list L of length N-1 such that`):
+print(`L[x] is the expected number of steps to exit the game. Try:`):
+print(`GR1dLG(5,[[-1,1/2],[1,1/2]]); `):
+
+
+elif nargs=1 and args[1]=GR1dFG then
+print(`GR1dFG(N,P,t): Inputs positive integer N, a probability table P where`):
+print(`P=[[a1,p1],[a2,p2],...,[ar,pr]] with p1+p2+...+pr=1, and variable t such that`):
+print(`the particle moves ai times with probability pi, and outputs`):
+print(`a list L of length N-1 such that L[x] is the probability generating function for`):
+print(`the duration of exiting the game if the particle starts at x. Try:`):
+print(`GR1dFG(5,[[-1,1/2],[1,1/2]],t); `):
+#used to be Prob1dF
+
+elif nargs=1 and args[1]=NewGR1dPG then
+print(`NewGR1dPG(N,P): Inputs positive integer N and a probability table P where`):
+print(`P=[[a1,p1],[a2,p2],...,[ar,pr]] with p1+p2+...+pr=1, such that the particle moves`):
+print(`ai times with probability pi, and outputs a list L of length N-1 such that`):
+print(`L[x] is the probability of exiting the game with N dollars using`):
+print(`a faster algorithm. Try: `):
+print(`NewGR1dPG(5,[[-1,1/2],[1,1/2]]);`):
+
+
+elif nargs=1 and args[1]=NewGR1dLG then
+print(`NewGR1dLG(N,P): Inputs positive integer N and a probability table P where`):
+print(`P=[[a1,p1],[a2,p2],...,[ar,pr]] with p1+p2+...+pr=1, such that`):
+print(`the particle moves ai times with probability pi, and outputs`):
+print(`a list L of length N-1 such that L[x] is the expected number of`):
+print(`steps to exit the game using a faster algorithm. Try`):
+print(`NewGR1dLG(5,[[-1,1/2],[1,1/2]]); `):
+
+
+elif nargs=1 and args[1]=NewGR1dFG then
+print(`NewGR1dFG(N,P,t): Inputs positive integer N, a probability table P where`):
+print(`P=[[a1,p1],[a2,p2],...,[ar,pr]] with p1+p2+...+pr=1, and variable t such that`):
+print(`the particle moves ai times with probability pi, and outputs a list L of length N-1`):
+print(`such that L[x] is the probability generating function for the duration of exiting`):
+print(`the game if the particle starts at x using a faster algorithm. Try:`):
+print(`NewGR1dFG(5,[[-1,1/2],[1,1/2]],t); `):
+
+
+elif nargs=1 and args[1]=GR1dMom2G then
+print(`GR1dMom2G(N,P): Inputs positive integer N and a probability table P where`):
+print(`P=[[a1,p1],[a2,p2],...,[ar,pr]] with p1+p2+...+pr=1, such that`):
+print(`the particle moves ai times with probability pi, and outputs a list L of length N-1`):
+print(`such that L[x] is the second moment at x. Try`):
+print(`GR1dMom2G(5,[[-1,1/2],[1,1/2]]); `):
+
+
+elif nargs=1 and args[1]=GR1dVG then
+print(`GR1dVG(N,P): Inputs positive integer N and a probability table P where`):
+print(`P=[[a1,p1],[a2,p2],...,[ar,pr]] with p1+p2+...+pr=1, such that`):
+print(`the particle moves ai times with probability pi, and outputs a list L of length N-1`):
+print(`such that L[x] is the variance at x, using the slow algorithm. Try:`):
+print(`GR1dVG(10, [[-1,1/2],[1,1/2]]); `):
+ 
+
+elif nargs=1 and args[1]=TestGR1dVG then
+print(`TestGR1dVG(N,P): Tests GR1dVG(N,P). Try:`):
+print(`TestGR1dVG(10,[[-1,1/2],[1,1/2]]); `):
+
+
+else
+ print(`There is no such thing as`, args):
+fi:
+
+end:
+
+
+
+
+
+
+########################
+# GR1dP(N): Inputs a positive integer N and outputs a list L of length N-1 such that L[x] 
+# is the probability of exiting the casino with N dollars
+GR1dP:=proc(N) local f,eq,i,var:
+var:={seq(f[i],i=0..N)}:
+eq:={f[0]=0,f[N]=1}:
+
+for i from 1 to N-1 do
+ eq:=eq union {f[i]=1/2*f[i-1]+1/2*f[i+1]}:
+od:
+var:=solve(eq,var):
+subs(var,[seq(f[i],i=1..N-1)]):
+end:
+
+
+# GR1dL(N): Inputs a positive integer N and outputs a list L of length N-1 such that
+# L[x] is the expected duration in the Casino until exiting (either a loser or winner)
+GR1dL:=proc(N) local f, eq, i,var:
+var:={seq(f[i],i=0..N)}:
+eq:={f[0]=0,f[N]=0}:
+
+for i from 1 to N-1 do
+ eq:=eq union {f[i]=1/2*f[i-1]+1/2*f[i+1]+1}:
+od:
+var:=solve(eq,var):
+subs(var,[seq(f[i],i=1..N-1)]):
+end:
+
+
+# GR1dF(N,t): Inputs a positive integer N and outputs a list L of length N-1 such that L[x] 
+# is the probability generating function of the duration of the game
+# NOTE: GR1dL(N)[i] = subs(t=1,diff(GR1dF(3,t)[i],t))
+GR1dF:=proc(N,t) local f,eq,i,var:
+var:={seq(f[i],i=0..N)}:
+eq:={f[0]=1,f[N]=1}:
+
+for i from 1 to N-1 do
+ eq:=eq union {f[i]=t/2*(f[i-1]+f[i+1])}:
+od:
+var:=solve(eq,var):
+subs(var,[seq(f[i],i=1..N-1)]):
+end:
+
+
+# GR1d1(x,N): Inputs integers x and N such that 0<=x<=N where x is the location on 
+# the discrete line of [0,N], and outputs a list of length two where the first element
+# is 0 (loser) or 1 (winner), followed by the number of times it takes to exit the game
+GR1d1:=proc(x,N) local i,r,t:
+t:=x:
+for i from 1 while not (t=0 or t=N) do
+ # generate a random real number between 0 and 1
+ r:=rand(0.0..1.0)():
+ if r<=1/2 then
+  t:=t-1:
+ else
+  t:=t+1:
+ fi:
+od:
+# if t=N then that means the particle reached t=N, 
+# else if t=0 then the particle reached t=0
+if t=N then
+ return [1,i-1]:
+else
+ return [0,i-1]:
+fi:
+end:
+
+# GR1d(x,N,K): Inputs integers x,N,K, runs GR1(x,N) "K" times, and outputs
+# the ratio of times where it exited a winner followed by the expected duration
+GR1d:=proc(x,N,K) local co,L,i,co1:
+co:=0:
+co1:=0:
+for i from 1 to K do
+ L:=GR1d1(x,N):
+ co1:=co1+L[2]:
+ if L[1]=1 then
+  co:=co+1:
+ fi:
+od:
+evalf([co/K,co1/K]):
+end:
+
+
+#########################
+#IsP(P): Inputs a table P=[[a1,p1],[a2,p2],...,[ar,pr]] where p1+p2+...+pr=1,
+# and checks that the ai's are strictly increasing, all probabilities add up to 1,
+# and that there exists at least one negative ai and one positive aj, outputs
+# true or false
+IsP:=proc(P) local P1,P2,n,i,j:
+n:=nops(P):
+P1:=[]:
+P2:=[]:
+for i from 1 to n do
+ P1:=[op(P1),P[i,1]]:
+ P2:=[op(P2),P[i,2]]:
+od:
+
+for i from 1 to n-1 do
+ if not (P1[i]<P1[i+1]) then
+  print(`The list of lists is not in ascending order (first entry)`):
+  return false:
+ fi:
+od:
+
+for i in P1 do
+ if not (type(min(P1),negint) and type(max(P1),posint)) then
+  print(`The lists of lists does not have a negative and positive integer (first entry)`):
+  return false:
+ fi:
+od:
+
+if not (add(i, i in P2)=1) then
+ print(`Sum of all the probabilities (elements in the second entry of P) should add up to 1`):
+ return false:
+fi:
+true:
+end:
+
+
+
+#MyPT(P): Inputs P=[[a1,p1],[a2,p2],...,[ar,pr]] where p1+p2+...+pr=1, and uses the Maple Sample function
+# to output ai with probability pi
+MyPT:=proc(P) local n,newP,i,X,j,k:
+n:=nops(P):
+newP:=[]:
+for i from 1 to n do
+ newP:=[op(newP),P[i,2]]:
+od:
+
+if add(j, j in newP)=1 and IsP(P) then
+ X:=RandomVariable(ProbabilityTable(newP)):
+ k:=convert(Sample(X,1)[1],integer):
+else
+ print(`Sum of all the probabilities (elements in the second entry of the given list) should add up to 1`):
+fi:
+P[k,1]:
+end:
+
+
+
+# GR1d1G(x,N,P): Inputs a positive integers x,N such that 0<x<N and a probability table P, 
+# P=[[a1,p1],[a2,p2],...,[ar,pr]] where p1+p2+...+pr=1, such that 
+# the particle moves ai times with probability pi, and outputs where it ended on the line 
+# followed by the number of times it takes to exit the game
+GR1d1G:=proc(x,N,P) local t,i:
+t:=x:
+
+# fix here to t>=N or t<=0
+for i from 1 while not (t>=N or t<=0) do
+ t:=t+MyPT(P):
+od:
+
+[t,i-1]:
+end:
+
+
+
+#GR1dG(x,N,P,K): Inputs positive integers x,N, runs GR1d1G(x,N,P) "K" times, and outputs 
+# the ratio of times where the particle ended at >=N, followed by the expected duration
+GR1dG:=proc(x,N,P,K) local i,co,co1,L:
+co:=0:
+co1:=0:
+for i from 1 to K do
+ L:=GR1d1G(x,N,P):
+ co1:=co1+L[2]:
+ if L[1]>=N then
+  co:=co+1:
+ fi:
+od:
+evalf([co/K,co1/K]):
+end:
+
+
+
+#GR1dPG(N,P): Inputs positive integer N and a probability table P where
+# P=[[a1,p1],[a2,p2],...,[ar,pr]] with p1+p2+...+pr=1, such that 
+# the particle moves ai times with probability pi, and outputs
+# a list L of length N-1 such that L[x] is the probability of
+# exiting the game with at least N dollars
+# NOTE: GR1dPG(N,[[-1,1/2],[1,1/2]]) = ProbN(N) in GGR.txt
+GR1dPG:=proc(N,P) local var,eq,newP,n,i,j,mi,ma,L,var1:
+
+if not IsP(P) then
+ return(FAIL):
+fi:
+
+n:=nops(P):
+
+#stores min and max of the ai's
+ma:=P[n,1]:
+mi:=P[1,1]:
+
+var:={seq(p[i],i=mi+1..N+ma-1)}:
+eq:={}:
+
+
+for i from mi+1 to 0 do
+ eq:=eq union {p[i]=0}:
+od:
+
+for i from N to N+ma-1 do 
+ eq:=eq union {p[i]=1}:
+od:
+
+for i from 1 to N-1 do
+ eq:=eq union {p[i]=add(P[j][2]*p[i+P[j,1]],j=1..n)}:
+od:
+L:=[seq(p[i],i=1..N-1)]:
+var1:=solve(eq,var):
+subs(var1,L):
+end:
+
+
+#GR1dLG(N,P): Inputs positive integer N and a probability table P where
+# P=[[a1,p1],[a2,p2],...,[ar,pr]] with p1+p2+...+pr=1, such that 
+# the particle moves ai times with probability pi, and outputs
+# a list L of length N-1 such that L[x] is the expected number of
+# steps to exit the game
+# NOTE: GR1dLG(N,[[-1,1/2],[1,1/2]]) = ExpN(N) in GGR.txt
+GR1dLG:=proc(N,P) local var,eq,newP,n,i,j,mi,ma,L,var1:
+if not IsP(P) then
+ return(FAIL):
+fi:
+
+n:=nops(P):
+
+#stores min and max of the ai's
+ma:=P[n,1]:
+mi:=P[1,1]:
+
+
+var:={seq(p[i],i=mi+1..N+ma-1)}:
+eq:={}:
+
+for i from mi+1 to 0 do
+ eq:=eq union {p[i]=0}:
+od:
+
+for i from N to N+ma-1 do 
+ eq:=eq union {p[i]=0}:
+od:
+
+for i from 1 to N-1 do
+ eq:=eq union {p[i]=add(P[j][2]*p[i+P[j,1]],j=1..n) + 1}:
+od:
+L:=[seq(p[i],i=1..N-1)]:
+var1:=solve(eq,var):
+subs(var1,L):
+end:
+
+
+#GR1dFG(N,P,t): Inputs positive integer N, a probability table P where
+# P=[[a1,p1],[a2,p2],...,[ar,pr]] with p1+p2+...+pr=1, and variable t such that 
+# the particle moves ai times with probability pi, and outputs
+# a list L of length N-1 such that L[x] is the probability generating function
+# for the duration of exiting the game if the particle starts at x
+# NOTE: subs(t=1,diff(GR1dFG(N,[[-1,1/2],[1,1/2]],t),t)[i] = GR1dLG(N,[[-1,1/2],[1,1/2]])[i]
+GR1dFG:=proc(N,P,t) local var,eq,newP,n,i,j,mi,ma,L,var1:
+
+if not IsP(P) then
+ return(FAIL):
+fi:
+
+n:=nops(P):
+
+#record min and max to determine how long after N can the particle jump to
+ma:=P[n,1]:
+mi:=P[1,1]:
+
+var:={seq(p[i],i=mi+1..N+ma-1)}:
+eq:={}:
+
+for i from mi+1 to 0 do
+ eq:=eq union {p[i]=1}:
+od:
+
+for i from N to N+ma-1 do 
+ eq:=eq union {p[i]=1}:
+od:
+
+for i from 1 to N-1 do
+ eq:=eq union {p[i]=t*add(P[j][2]*p[i+P[j,1]],j=1..n)}:
+od:
+L:=[seq(p[i],i=1..N-1)]:
+var1:=solve(eq,var):
+subs(var1,L):
+end:
+
+
+#NewGR1dPG(N,P): Inputs positive integer N and a probability table P where
+# P=[[a1,p1],[a2,p2],...,[ar,pr]] with p1+p2+...+pr=1, such that 
+# the particle moves ai times with probability pi, and outputs
+# a list L of length N-1 such that L[x] is the probability of
+# exiting the game using a faster algorithm
+# NOTE: NewGR1dPG(N,[[-1,1/2],[1,1/2]]) =GR1dPG(N,)= ProbN(N) in GGR.txt
+NewGR1dPG:=proc(N,P) local n, newP, i, j, ma, mi, var1,var2, var3,eq,eq1,p,S,L,temp:
+if not IsP(P) then
+ return(FAIL):
+fi:
+
+n:=nops(P):
+
+#stores the max and min of the ais
+ma:=P[n,1]:
+mi:=P[1,1]:
+
+#stores all necessary eqns
+eq:={}:
+for i from mi+1 to 0 do
+ eq:=[op(eq),p[i]=0]:
+od:
+
+for i from N to N+ma-1 do 
+ eq:=[op(eq),p[i]=1]:
+od:
+
+#var1 will store the variables d[i]
+var1:={}:
+
+#set all p[i]'s equal to d[i]'s from 1 to max of the ai's
+for i from 1 to ma do 
+ eq:=[op(eq),p[i]=d[i]]:
+ var1:=var1 union {d[i]}:
+od:
+
+S:={seq(i,i=1..n-1)}:
+
+for i from ma+1 to N+ma-1 do
+ temp:=1/(P[n][2])*(p[i-ma]-add(P[j][2]*p[(i+P[j,1])-ma],j in S)):
+ eq:=[op(eq),subs(eq,p[i]=temp)]:
+od:
+
+#L stores the variables p[1],p[2],...,p[N-1]
+L:=[seq(p[i],i=1..N-1)]:
+
+eq1:=[seq(eq[-i],i=1..ma)]:
+var2:=solve(eq1,var1):
+var3:=subs(var2,eq):
+subs(var3,L):
+end:
+
+
+
+#NewGR1dLG(N,P): Inputs positive integer N and a probability table P where
+# P=[[a1,p1],[a2,p2],...,[ar,pr]] with p1+p2+...+pr=1, such that 
+# the particle moves ai times with probability pi, and outputs
+# a list L of length N-1 such that L[x] is the expected number of
+# steps to exit the game using a faster algorithm
+NewGR1dLG:=proc(N,P) local n, newP, i, j, ma, mi, var1,var2, var3,eq,eq1,p,S,L,temp:
+if not IsP(P) then
+ return(FAIL):
+fi:
+
+n:=nops(P):
+
+#stores the max and min of the ais
+ma:=P[n,1]:
+mi:=P[1,1]:
+
+#stores all necessary eqns
+eq:={}:
+for i from mi+1 to 0 do
+ eq:=[op(eq),p[i]=0]:
+od:
+
+for i from N to N+ma-1 do 
+ eq:=[op(eq),p[i]=0]:
+od:
+
+#var1 will store the variables d[i]
+var1:={}:
+
+#set all p[i]'s equal to d[i]'s from 1 to max of the ai's
+for i from 1 to ma do 
+ eq:=[op(eq),p[i]=d[i]]:
+ var1:=var1 union {d[i]}:
+od:
+
+S:={seq(i,i=1..n-1)}:
+
+for i from ma+1 to N+ma-1 do
+ temp:=1/(P[n][2])*(p[i-ma]-add(P[j][2]*p[(i+P[j,1])-ma],j in S)-1):
+ eq:=[op(eq),subs(eq,p[i]=temp)]:
+od:
+
+#L stores the variables p[1],p[2],...,p[N-1]
+L:=[seq(p[i],i=1..N-1)]:
+
+eq1:=[seq(eq[-i],i=1..ma)]:
+var2:=solve(eq1,var1):
+var3:=subs(var2,eq):
+subs(var3,L):
+end:
+
+
+#NewGR1dFG(N,P,t): Inputs positive integer N, a probability table P where
+# P=[[a1,p1],[a2,p2],...,[ar,pr]] with p1+p2+...+pr=1, and variable t such that
+# the particle moves ai times with probability pi, and outputs a list L of length N-1
+# such that L[x] is the probability generating function for the duration of exiting
+# the game if the particle starts at x using a faster algorithm
+NewGR1dFG:=proc(N,P,t) local n, newP, i, j, ma, mi, var1,var2, var3,eq,eq1,p,S,L,temp:
+if not IsP(P) then
+ return(FAIL):
+fi:
+
+n:=nops(P):
+
+#stores max and min of the ai's
+ma:=P[n,1]:
+mi:=P[1,1]:
+
+#stores all necessary eqns
+eq:={}:
+for i from mi+1 to 0 do
+ eq:=[op(eq),p[i]=1]:
+od:
+
+for i from N to N+ma-1 do 
+ eq:=[op(eq),p[i]=1]:
+od:
+
+#var1 will store the variables d[i]
+var1:={}:
+
+#set all p[i]'s equal to d[i]'s from 1 to max of the ai's
+for i from 1 to ma do 
+ eq:=[op(eq),p[i]=d[i]]:
+ var1:=var1 union {d[i]}:
+od:
+
+S:={seq(i,i=1..n-1)}:
+
+for i from ma+1 to N+ma-1 do
+ temp:=normal(1/(t*P[n][2])*p[i-ma]-1/P[n][2]*(add(P[j][2]*p[(i+P[j,1])-ma],j in S))):
+ eq:=[op(eq),subs(eq,p[i]=temp)]:
+od:
+
+#L stores the variables p[1],p[2],...,p[N-1]
+L:=[seq(p[i],i=1..N-1)]:
+
+eq1:=[seq(eq[-i],i=1..ma)]:
+var2:=solve(eq1,var1):
+var3:=subs(var2,eq):
+normal(subs(var3,L)):
+end:
+
+ 
+
+#GR1dMom2G(N,P): Inputs positive integer N and a probability table P where
+# P=[[a1,p1],[a2,p2],...,[ar,pr]] with p1+p2+...+pr=1, such that
+# the particle moves ai times with probability pi, and outputs a list L of length N-1
+# such that L[x] is the second moment at x
+# NOTE: GR1dMom2G(N,P)=subs(t=1,diff(t*diff(NewGR1dFG(N,P,t),t),t));
+GR1dMom2G:=proc(N,P) local L,var,eq,i,j,n,ma,mi,L1,L2:
+if not IsP(P) then
+ return(FAIL):
+fi:
+
+n:=nops(P):
+
+#stores max and min of the ai's
+ma:=P[n,1]:
+mi:=P[1,1]:
+
+L1:=NewGR1dLG(N,P):
+
+L:=[0$-(mi),op(L1),0$ma]:
+
+var:={seq(b[i],i=mi+1..N+ma-1)}:
+
+#stores all necessary eqns
+eq:={}:
+for i from mi+1 to 0 do
+ eq:=eq union {b[i]=0}:
+od:
+
+for i from N to N+ma-1 do 
+ eq:=eq union {b[i]=0}:
+od:
+
+
+
+for i from 1 to N-1 do
+ eq:=eq union {b[i]-add(P[j][2]*b[i+P[j][1]],j=1..n)=2*(add(P[j][2]*L[i+P[j][1]-mi],j=1..n))}:
+od:
+var:=solve(eq,var):
+L2:=subs(var,[seq(b[i],i=1..N-1)]):
+L1+L2:
+end:
+
+
+#GR1dVG(N,P): Inputs positive integer N and a probability table P where
+# P=[[a1,p1],[a2,p2],...,[ar,pr]] with p1+p2+...+pr=1, such that
+# the particle moves ai times with probability pi, and outputs a list L of length N-1
+# such that L[x] is the variance at x, using the slow algorithm
+GR1dVG:=proc(N,P) local L1,L2,i:
+L1:=GR1dMom2G(N,P):
+L2:=NewGR1dLG(N,P):
+[seq(L1[i]-L2[i]^2,i=1..nops(L1))]:
+end:
+
+
+#TestGR1dVG(N,P): tests GR1dVG(N,P)
+TestGR1dVG:=proc(N,P) local V,V1,M1,M2,t,L,i:
+L:=GR1dFG(N,P,t):
+M1:=[seq(subs(t=1,diff(L[i],t)),i=1..nops(L))]:
+M2:=[seq(subs(t=1,diff(t*diff(L[i],t),t)),i=1..nops(L))]:
+
+V:=[seq(M2[i]-M1[i]^2,i=1..nops(M1))]:
+V1:=GR1dVG(N,P):
+evalb(V=V1):
+end:

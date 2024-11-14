@@ -1,0 +1,1006 @@
+######################################################################
+## GGR2d.txt: Save this file as  GGR2d.txt to use it,                #
+# stay in the                                                        #
+## same directory, get into Maple (by typing: maple <Enter> )        #
+#then type: read `GGR2d.txt`: <Enter>                                #
+## Then follow the instructions given there                          #
+##                                                                   #
+## Written by  Lucy Martinez Rutgers University			     #
+######################################################################
+
+#VERSION OF November 08, 2024
+
+with(Statistics):
+
+
+
+print(`First Written: March 2024: tested for Maple 20 `):
+print():
+print(`This is GGR2d.txt, a Maple package `):
+print(`accompanying Lucy Martinez's  article: `):
+print(`A symbolic computational approach to the generalized gambler's ruin problem in one and two dimensions`):
+
+print(`-------------------------------`):
+
+print(`-------------------------------`):
+print():
+print(`The most current version is available at the url:`):
+print(` https://`):
+
+print(`Please report all bugs to: lm1154@scarletmail.rutgers.edu  .`):
+print():
+print(`-------------------------------`):
+
+
+print(`For general help, and a list of the MAIN functions,`):
+print(` type "Help();". For specific help type "Help(procedure_name);" `):
+
+print(`-------------------------------`):
+
+print(`For a list of the simulation (classical game or general) functions type:  HelpSimu();`):
+
+print(`For a list of the slow (classical game or general) functions type:  HelpSlow();`):
+
+print(`For help with a specific procedure, type "Help(procedure_name);"`):
+print():
+print(`-------------------------------`):
+
+
+
+HelpSimu:=proc()
+if args=NULL then
+
+print(`The procedures for simulation (classical game) are: GR2d1, GR2d, GR2dT`):
+print(`The procedures for simulation (general game) are: MyPT, GR2d1G, GR2dG, GR2dTG`):
+
+
+else
+ Help(args):
+fi:
+end:
+
+
+HelpSlow:=proc()
+if args=NULL then
+
+print(`The procedures for the slow algorithm are: GR2dP, GR2dL, GR2dF`):
+
+else
+ Help(args):
+fi:
+end:
+
+Help:=proc()
+
+if args=NULL then
+
+print(`GGR2d.txt: A Maple package for generalized 2-dimensional gambler's ruin`):
+print(`The main procedures are: NewGR2dP, NewGR2dL, NewGR2dF,`):
+print(`NewGR2dPG, NewGR2dLG, NewGR2dFG`):
+print(`GR2dMom2G, GR2dVG`):
+print(`KmetPetkovsek, KmetPetkovsek1, KmetPetkovsek2`):
+
+elif nargs=1 and args[1]=GR2d1 then 
+print(`GR2d1(M,N,pt): Inputs positive integers M and N and pt=[x0,y0] where 0<x0<M, 0<y0<N`):
+print(`with probability 1/4 it goes left, with probability 1/4 it goes up, `):
+print(`with probability 1/4 it goes right, or with probability 1/4 it goes down, `):
+print(`until it hits the boundary (left, top, right, or bottom), `):
+print(`and outputs which part of the boundary, followed by the number of steps. Try:`):
+print(`GR2d1(10,10,[5,4]); `):
+
+
+elif nargs=1 and args[1]=GR2d then 
+print(`GR2d(M,N,pt,K): Inputs positive integers M and N, and pt=[x0,y0] where 0<x0<M, 0<y0<N,`):
+print(`runs GR2d1(M,N,pt) "K" times, and outputs a list L of length 4 such that`):
+print(`L[1] is the fraction of times it finished on the left`):
+print(`L[2] is the fraction of times it finished on the top`):
+print(`L[3] is the fraction of times it finished on the right`):
+print(`L[4] is the fraction of times it finished on the bottom`):
+print(`followed by the average number of moves. Try:`):
+print(`GR2d(10,10,[5,5],1000); `):
+
+
+elif nargs=1 and args[1]=GR2dT then 
+print(`GR2dT(M,N,pt,K,t): Inputs positive integers M and N, and pt=[x0,y0] where 0<x0<M, 0<y0<N,`):
+print(`runs GR2d1(M,N,pt) "K" times, and outputs the duration generating function`):
+print(`of the average number of moves. Try:`):
+print(`GR2dT(10,10,[5,5],1000,t); `):
+
+
+
+elif nargs=1 and args[1]=MyPT then
+print(`MyPT(P): Inputs P=[p1,p2,p3,p4] where p1+p2+p3+p4=1, and uses the Maple Sample function`):
+print(`to output [-1,0] with probability p1, [0,1] with probability p2,`):
+print(`[1,0] with probability p3, or [0,-1] with probability p4. Try:`):
+print(`MyPT([1/4,1/4,1/4,1/4]); `):
+
+
+elif nargs=1 and args[1]=GR2d1G then 
+print(`GR2d1G(M,N,pt,P): Inputs positive integers M,N and pt=[x0,y0] where 0<x0<N, 0<y0<M`):
+print(`and a probability table P=[p_L,p_U,p_R,p_B] such that`):
+print(`the particle moves left by one step with probability p_L,`):
+print(`moves up by one step with probability p_U,`):
+print(`moves right by one step with probability p_R, and`):
+print(`moves down by one step with probability p_B,`):
+print(`and keeps moving until it reaches a boundary,`):
+print(`outputs which part of the boundary, followed by the number of steps. Try:`):
+print(`GR2d1G(10,10,[5,5],[1/4,1/4,1/4,1/4]); `):
+
+
+
+elif nargs=1 and args[1]=GR2dG then
+print(`GR2dG(M,N,pt,P,K): Inputs positive integers M,N and pt=[x0,y0] where 0<x0<M, 0<y0<N,`):
+print(`and a probability table P=[p_L,p_U,p_R,p_B], runs GR2d1G(M,N,pt,P) "K" times,`):
+print(`and outputs a list L of length 4 such that`):
+print(`L[1] is the fraction of times it finished on the left`):
+print(`L[2] is the fraction of times it finished on the top`):
+print(`L[3] is the fraction of times it finished on the right`):
+print(`L[4] is the fraction of times it finished on the bottom`):
+print(`followed by the average number of moves. Try:`):
+print(`GR2dG(10,10,[5,5],[1/4,1/4,1/4,1/4],1000); `):
+
+ 
+elif nargs=1 and args[1]=GR2dTG then 
+print(`GR2dTG(M,N,pt,K,t): Inputs positive integers M,N, and pt=[x0,y0] where 0<x0<M, 0<y0<N,`):
+print(`and a probability table P=[p_L,p_U,p_R,p_B], runs GR2d1G(M,N,pt,P) "K" times,`):
+print(`and outputs the duration generating function of the average number of moves. Try:`):
+print(`GR2dTG(10,10,[5,5],[1/4,1/4,1/4,1/4],1000,t)`):
+
+
+elif nargs=1 and args[1]=GR2dP then
+print(`GR2dP(M,N,L,U,R,B): Inputs positive integers M,N and symbols L,U,R,B where`):
+print(`MxN is a rectangle with L=left edge, U=top edge, R=right edge, B=bottom edge,`):
+print(`and outputs an (M-1) by (N-1) matrix whose entries are linear combinations`):
+print(`of L,U,R,B where the coefficient of L, for example, is the probability that`):
+print(`if you start at pt=[a,b] you end up on the left edge (L). Try:`):
+print(`GR2dP(10,10,L,U,R,B); `):
+#If A:=GR2dP(10,10,L,U,R,B) then A[5,5] should be close to GR2d(10,10,[5,5],K)
+
+
+#used to be called Exp2d
+elif nargs=1 and args[1]=GR2dL then
+print(`GR2dL(M,N): Inputs positive integers M,N and outputs an (M-1) by (N-1) matrix M`):
+print(`such that M[a][b] is the expected life if the particle starts at pt=[a,b]. Try:`):
+print(`GR2dL(10,10); `):
+#GR2dL(M,N)[a,b] should be close to GR2d(M,N,pt,K) for pt=[a,b]
+
+
+elif nargs=1 and args[1]=GR2dF then
+print(`GR2dF(M,N,t): Inputs positive integers M,N and outputs an (M-1) by (N-1) matrix M `):
+print(`such that M[a][b] is the probability generating function (pgf)`):
+print(`for duration if the particle starts at pt=[a,b]. Try:`):
+print(`GR2dF(10,10,t); `):
+
+
+elif nargs=1 and args[1]=NewGR2dP then
+print(`NewGR2dP(M,N,L,U,R,B): Inputs positive integers M,N and symbols L,U,R,B where`):
+print(`MxN is a rectangle with L=left edge, U=top edge, R=right edge, B=bottom edge,`):
+print(`and outputs an (M-1) by (N-1) matrix whose entries are linear combinations`):
+print(`of L,U,R,B where the coefficient of L, for example, is the probability that`):
+print(`if you start at pt=[a,b] you end up on the left edge (L). Try:`):
+print(`NewGR2dP(10,10,L,U,R,B); `):
+
+
+elif nargs=1 and args[1]=NewGR2dL then
+print(`NewGR2dL(M,N): Inputs positive integers M,N and outputs an (M-1) by (N-1) matrix M`):
+print(`such that M[a][b] is the expected life if the particle starts at pt=[a,b]`):
+print(`for the classical game using a faster algorithm. Try:`):
+print(`NewGR2dL(10,10); `):
+
+
+elif nargs=1 and args[1]=NewGR2dF then
+print(`NewGR2dF(M,N,t): Inputs positive integers M,N and outputs an (M-1) by (N-1)`):
+print(`matrix M such that M[a][b] is the probability generating function (pgf)`):
+print(`for duration if the particle starts at pt=[a,b]. Try:`):
+print(`NewGR2dF(3,3,t); `):
+
+
+elif nargs=1 and args[1]=NewGR2dPG then
+print(`NewGR2dPG(M,N,L,U,R,B,P): Inputs positive integers M,N and symbols L,U,R,B where`):
+print(`MxN is a rectangle with L=left edge, U=top edge, R=right edge, B=bottom edge,`):
+print(`and a probability table P=[p_L,p_U,p_R,p_B] such that`):
+print(`the particle moves left by one step with probability p_L,`):
+print(`moves up by one step with probability p_U,`):
+print(`moves right by one step with probability p_R, and`):
+print(`moves down by one step with probability p_B,`):
+print(`and outputs an (M-1) by (N-1) matrix whose entries are linear combinations`):
+print(`of L,U,R,B where the coefficient of L, for example, is the probability that`):
+print(`if you start at pt=[a,b] you end up on the left edge (L). Try:`):
+print(`NewGR2dPG(3,3,L,U,R,B,[1/4,1/4,1/4,1/4]); `):
+
+
+elif nargs=1 and args[1]=NewGR2dLG then
+print(`NewGR2dLG(M,N,P): Inputs positive integers M,N and a probability table P=[p_L,p_U,p_R,p_B]`):
+print(`with p_L+p_U+p_R+p_B=1 such that the particle has the following options`):
+print(`moves left, by one step, with probability p_L,`):
+print(`moves up, by one step, with probability p_U,`):
+print(`moves right, by one step, with probability p_R, and`):
+print(`moves down, by one step, with probability p_B,`):
+print(`and outputs an (M-1) by (N-1) matrix M such that M[a][b] is the expected life`):
+print(`if the particle starts at pt=[a,b]. Try:`):
+print(`NewGR2dLG(3,3,[1/4,1/4,1/4,1/4]); `):
+
+
+elif nargs=1 and args[1]=NewGR2dFG then
+print(`NewGR2dFG(M,N,P,t): Inputs positive integers M,N and a probability table P=[p_L,p_U,p_R,p_B]`):
+print(`with p_L+p_U+p_R+p_B=1 such that the particle has the following options`):
+print(`moves left, by one step, with probability p_L,`):
+print(`moves up, by one step, with probability p_U,`):
+print(`moves right, by one step, with probability p_R, and`):
+print(`moves down, by one step, with probability p_B,`):
+print(`and outputs an (M-1) by (N-1) matrix M such that M[a][b] is the probability`):
+print(`generating function (pgf) for duration if the particle starts at pt=[a,b]. Try:`):
+print(`NewGR2dFG(3,3,[1/4,1/4,1/4,1/4],t); `):
+
+
+elif nargs=1 and args[1]=KmetPetkovsek then
+print(`KmetPetkovsek(N): Implements Kmet and Petkovsek's formula for `):
+print(`the expected duration of the 2-dimensional Gambler's Ruin Game for the N by N case, and`):
+print(`sorts the list into a N by N list of lists, and uses evalf to compute the formula.. Try:`):
+print(`KmetPetkovsek(5); `):
+
+
+elif nargs=1 and args[1]=KmetPetkovsek1 then
+print(`KmetPetkovsek1(N): Implements Kmet and Petkovsek's formula for `):
+print(`the expected duration of the 2-dimensional Gambler's Ruin Game for the N by N case. This`):
+print(`sorts the list into a list of lists, and uses simplify to compute the formula. Try:`):
+print(`KmetPetkovsek2(5); `):
+
+
+elif nargs=1 and args[1]=KmetPetkovsek2 then
+print(`KmetPetkovsek2(N): Implements Kmet and Petkovsek's formula for `):
+print(`the expected duration of the 2-dimensional Gambler's Ruin Game for the N by N case. This`):
+print(`does not sort the list, and uses evalf to compute the formula. Try:`):
+print(`KmetPetkovsek2(5); `):
+
+
+ 
+elif nargs=1 and args[1]=GR2dMom2G then
+print(`GR2dMom2G(M,N): Inputs positive integers M,N and outputs a list of lists L`):
+print(`of length (M-1)x(N-1) such that L[x,y] is the second moment at (x,y). Try:`):
+print(`GR2dMom2G(5,5); `):
+
+
+ 
+elif nargs=1 and args[1]=GR2dVG then
+print(`GR2dVG(M,N): Inputs positive integers M,N and outputs a list of lists L`):
+print(`of length (M-1)x(N-1) such that L[x,y] is the variance at (x,y). Try:`):
+print(`GR2dVG(5,5); `):
+
+
+else
+ print(`There is no such thing as`, args):
+fi:
+
+end:
+
+########################
+#GR2d1(M,N,pt): Inputs pos. integers M and N and pt=[x0,y0] where
+# 0<x0<M, 0<y0<N with prob. 1/4 it goes up, with prob. 1/4 it goes down,
+# with prob. 1/4 it goes left, or with prob. 1/4 it goes right, until it hits the boundary,
+# and outputs which part of the boundary, followed by the number of steps
+GR2d1:=proc(M,N,pt) local p,i,ra,S,t:
+p:=pt:
+
+if M<=0 then 
+ return(`M must be positive`):
+elif N<=0 then
+ return(`N must be positive`):
+elif p[1]<=0 or p[1]>=M then
+ return(`The first coordinate of pt must be between 0 and M`):
+elif p[2]<=0 or p[2]>=N then
+ return(`The second coordinate of pt must be between 0 and N`):
+fi:
+# [-1,0]=left, [0,1]=top, [1,0]=right, [0,-1]=bottom
+S:=[[-1,0], [0,1],[1,0],[0,-1]]:
+
+for i from 1 while not (p[1]=0 or p[1]=M or p[2]=N or p[2]=0) do
+ ra:=rand(1..4)():
+
+ # 1 = S[1] = [-1,0]
+ if ra=1 then
+  p:=[p[1]-1,p[2]]:
+
+ # 2 = S[2] = [0,1]
+ elif ra=2 then
+  p:=[p[1],p[2]+1]:
+
+ # 3 = S[3] = [1,0]
+ elif ra=3 then
+  p:=[p[1]+1,p[2]]:
+
+ # 4 =  S[4] = [0,-1]
+ elif ra=4 then
+  p:=[p[1],p[2]-1]:
+ fi:
+od:
+
+[p,i-1]:
+end:
+
+
+# This is simulation for the percentages, and the expected number of steps 
+#GR2d(M,N,pt,K): Inputs pos. integers M and N and pt=[x0,y0] where 0<x0<M, 0<y0<N,
+# runs GR2d1(M,N,pt) "K" times, and outputs a list L of length 4 such that
+# L[1] is the fraction of times it finished on the left
+# L[2] is the fraction of times it finished on the top
+# L[3] is the fraction of times it finished on the right
+# L[4] is the fraction of times it finished on the bottom
+# followed by the average number of moves
+GR2d:=proc(M,N,pt,K) local L1,L2,co,i:
+L1:=[0$4]:
+co:=0:
+for i from 1 to K do
+ L2:=GR2d1(M,N,pt):
+
+ # add each number of steps it took for the particle to reach the
+ # boundary from round 1 to round K
+ # (there are K trials, in each trial, add the number of steps it takes to reach 
+ #  any of the edges on the boundary)
+ co:=co+L2[2]:
+
+ #L1[1] is the fraction of times it finished on the left
+ if L2[1][1]=0 and 0<=L2[1][2] and L2[1][2]<=N then
+  L1[1]:=L1[1]+1:
+
+ # L1[2] is the fraction of times it finished on the top
+ elif L2[1][2]=N and 0<=L2[1][1] and L2[1][1]<=M then
+  L1[2]:=L1[2]+1:
+ 
+ # L1[3] is the fraction of times it finished on the right
+ elif L2[1][1]=M and 0<=L2[1][2] and L2[1][2]<=N then
+  L1[3]:=L1[3]+1:
+
+ # L1[4] is the fraction of times it finished on the bottom
+ elif L2[1][2]=0 and 0<=L2[1][1] and L2[1][1]<=M then
+  L1[4]:=L1[4]+1:
+ fi:
+od:
+evalf([L1/K,co/K]):
+end:
+
+
+
+# Using simulation, GR2dT(M,N,pt,K,t) outputs the generating function for the number of expected steps
+# Derivative at t=1 should be close to the output of GR2d(M,N,pt,K)[2]
+# In addition, GR2dL(M,N)[pt] is the exact expected number of steps and the two previous results
+# should be close to GR2dL(M,N)[pt]
+
+#GR2dT(M,N,pt,K,t): Inputs pos. integers M and N, and pt=[x0,y0] where 0<x0<M, 0<y0<N,
+# runs GR2d1(M,N,pt) "K" times, and outputs the duration generating function of the 
+# average number of moves
+GR2dT:=proc(M,N,pt,K,t) local L1,L2,co,i:
+L1:=[0$4]:
+co:=0:
+for i from 1 to K do
+ L2:=GR2d1(M,N,pt):
+ co:=co+t^(L2[2]):
+
+ # the exponent of t is the number of steps it took for the particle to reach the
+ # boundary in one round, and the coefficient is the average number of moves
+ # i.e f(t)=1/K*Sum(t^duration) over all trials
+od:
+evalf(co/K):
+end:
+
+
+#MyPT(P): Inputs P=[p1,p2,p3,p4] where p1+p2+p3+p4=1, and uses the Maple Sample function
+# to output [-1,0] with probability p1, [0,1] with probability p2,
+# [1,0] with probability p3, or [0,-1] with probability p4
+MyPT:=proc(P) local n,i,X,j,k,S:
+n:=nops(P):
+# [-1,0]=left, [0,1]=top, [1,0]=right, [0,-1]=bottom
+S:=[[-1,0], [0,1],[1,0],[0,-1]]:
+
+if add(j, j in P)=1 then
+ X:=RandomVariable(ProbabilityTable(P)):
+ k:=convert(Sample(X,1)[1],integer):
+else
+ print(`Sum of all the probabilities (elements in the second entry of the given list) should add up to 1`):
+fi:
+S[k]:
+end:
+
+
+#GR2d1G(M,N,pt,P): Inputs positive integers M,N and pt=[x0,y0] where 0<x0<N, 0<y0<M
+# and a probability table P=[p_L,p_U,p_R,p_B] such that
+# the particle moves left by one step with probability p_L,
+# moves up by one step with probability p_U,
+# moves right by one step with probability p_R, and
+# moves down by one step with probability p_B,
+# and keeps moving until it reaches a boundary,
+# outputs which part of the boundary, followed by the number of steps
+GR2d1G:=proc(M,N,pt,P) local i,p:
+if add(i,i in P)<>1 then
+ print(`Sum of probabilities do not add up to 1`):
+ return(FAIL):
+fi:
+
+p:=pt:
+
+if M<=0 then 
+ return(`M must be positive`):
+elif N<=0 then
+ return(`N must be positive`):
+elif p[1]<=0 or p[1]>=M then
+ return(`The first coordinate of pt must be between 0 and M`):
+elif p[2]<=0 or p[2]>=N then
+ return(`The second coordinate of pt must be between 0 and N`):
+fi:
+
+# [-1,0]=left, [0,1]=top, [1,0]=right, [0,-1]=bottom
+# the output from MyPT(P) will be one of following elements from S
+#S:=[[-1,0], [0,1],[1,0],[0,-1]]:
+
+for i from 1 while not (p[1]=0 or p[1]=M or p[2]=N or p[2]=0) do
+ p:=p+MyPT(P):
+od:
+
+[p,i-1]:
+end:
+
+
+
+#GR2dG(M,N,pt,P,K): Inputs positive integers M,N and pt=[x0,y0] where 0<x0<M, 0<y0<N,
+# and a probability table P=[p_L,p_U,p_R,p_B], runs GR2d1G(M,N,pt,P) "K" times,
+# and outputs a list L of length 4 such that
+# L[1] is the fraction of times it finished on the left
+# L[2] is the fraction of times it finished on the top
+# L[3] is the fraction of times it finished on the right
+# L[4] is the fraction of times it finished on the bottom
+# followed by the average number of moves
+GR2dG:=proc(M,N,pt,P,K) local i, L1,L2,co:
+L1:=[0$4]:
+co:=0:
+for i from 1 to K do
+ L2:=GR2d1G(M,N,pt,P):
+ co:=co+L2[2]:
+ 
+ #L1[1] is the fraction of times it finished on the left
+ if L2[1][1]=0 and 0<=L2[1][2] and L2[1][2]<=N then
+  L1[1]:=L1[1]+1:
+
+ # L1[2] is the fraction of times it finished on the top
+ elif L2[1][2]=N and 0<=L2[1][1] and L2[1][1]<=M then
+  L1[2]:=L1[2]+1:
+ 
+ # L1[3] is the fraction of times it finished on the right
+ elif L2[1][1]=M and 0<=L2[1][2] and L2[1][2]<=N then
+  L1[3]:=L1[3]+1:
+
+ # L1[4] is the fraction of times it finished on the bottom
+ elif L2[1][2]=0 and 0<=L2[1][1] and L2[1][1]<=M then
+  L1[4]:=L1[4]+1:
+ fi:
+od:
+evalf([L1/K,co/K]):
+end:
+
+
+
+#GR2dTG(M,N,pt,K,t): Inputs positive integers M,N, and pt=[x0,y0] where 0<x0<M, 0<y0<N,
+# and a probability table P=[p_L,p_U,p_R,p_B], runs GR2d1G(M,N,pt,P) "K" times,
+# and outputs the duration generating function of the average number of moves
+GR2dTG:=proc(M,N,pt,P,K,t) local i, L1,L2,co:
+L1:=[0$4]:
+co:=0:
+for i from 1 to K do
+ L2:=GR2d1G(M,N,pt,P):
+ co:=co+t^(L2[2]):
+od:
+
+evalf(co/K):
+end:
+
+
+
+# The elements in GR2d(M,N,pt,K)[1] should be close to the coeffs of GR2dP(M,N,L,U,R,B)[pt]
+
+
+#GR2dP(M,N,L,U,R,B): Inputs positive integers M,N and symbols L,U,R,B
+# where MxN is a rectangle with L=left edge, U=top edge, R=right edge, B=bottom edge,
+# and outputs an (M-1) by (N-1) matrix whose entries are linear combinations
+# of L,U,R,B where the coefficient of L, for example, is the probability that 
+# if you start at pt=[a,b] you end up on the left edge (L)
+GR2dP:=proc(M,N,L,U,R,B) local var,eq,i,j,var1,L1:
+var:={seq(seq(p[i,j],i=0..M),j=0..N)}:
+eq:={}:
+
+# set each pt on each edge equal to the symbol on the edge so that we distinguish
+# pts on left, top, right or bottom edge
+
+for i from 1 to M-1 do
+ eq:=eq union {p[i,N]=U}:
+ eq:=eq union {p[i,0]=B}:
+od:
+
+for j from 1 to N-1 do
+ eq:=eq union {p[0,j]=L}:
+ eq:=eq union {p[M,j]=R}:
+od:
+
+for i from 1 to M-1 do
+ for j from 1 to N-1 do
+  eq:=[op(eq),p[i,j]=1/4*(p[i+1,j]+p[i-1,j]+p[i,j+1]+p[i,j-1])]:
+ od:
+od:
+L1:=[seq([seq(p[i,j],j=1..N-1)],i=1..M-1)]:
+var1:=solve(eq,var):
+subs(var1,L1):
+end:
+
+
+#GR2dL(M,N) gives the exact expected number of steps for all pts in the M by N rectangle
+#NOTE: subs(t=1, diff(GR2dF(M,N,L,U,R,B)[pt],t)) should be the same as GR2dL(M,N)[pt]
+#used to be Exp2d
+
+
+#GR2dL(M,N): Inputs positive integers M,N and outputs an (M-1) by (N-1) matrix M
+# such that M[a][b] is the expected life if the particle starts at pt=[a,b]
+GR2dL:=proc(M,N) local var,eq,i,j,var1,L1:
+var:={seq(seq(p[i,j],i=0..M),j=0..N)}:
+eq:={}:
+
+# set each expected life on each pt on the boundary = 0 since the expected number of 
+# steps to get to the boundary if we are on the boundary already is 0
+for i from 1 to M-1 do
+ eq:=eq union {p[i,N]=0}:
+ eq:=eq union {p[i,0]=0}:
+od:
+
+for j from 1 to N-1 do
+ eq:=eq union {p[0,j]=0}:
+ eq:=eq union {p[M,j]=0}:
+od:
+
+for i from 1 to M-1 do
+ for j from 1 to N-1 do
+  eq:=[op(eq),p[i,j]=1/4*(p[i+1,j]+p[i-1,j]+p[i,j+1]+p[i,j-1])+1]:
+ od:
+od:
+L1:=[seq([seq(p[i,j],j=1..N-1)],i=1..M-1)]:
+var1:=solve(eq,var):
+subs(var1,L1):
+end:
+
+
+#GR2dF(M,N,t): Inputs positive integers M,N and outputs an (M-1) by (N-1) matrix M
+# such that M[a][b] is the probability generating function (pgf)
+# for duration if the particle starts at pt=[a,b]
+#NOTE: subs(t=1, diff(GR2dF(M,N,t)[pt],t)) should be the same as GR2dL(M,N)[pt]
+GR2dF:=proc(M,N,t) local var,eq,i,j,var1,L1:
+var:={seq(seq(p[i,j],i=0..M),j=0..N)}:
+eq:={}:
+
+# set each prob. on each of the pts in the boundary = 1
+# since if we are in the boundary, the prob to reach the boundary is 1
+for i from 1 to M-1 do
+ eq:=eq union {p[i,N]=1}:
+ eq:=eq union {p[i,0]=1}:
+od:
+
+for j from 1 to N-1 do
+ eq:=eq union {p[0,j]=1}:
+ eq:=eq union {p[M,j]=1}:
+od:
+
+for i from 1 to M-1 do
+ for j from 1 to N-1 do
+  eq:=[op(eq),p[i,j]=t/4*(p[i+1,j]+p[i-1,j]+p[i,j+1]+p[i,j-1])]:
+ od:
+od:
+L1:=[seq([seq(p[i,j],j=1..N-1)],i=1..M-1)]:
+var1:=solve(eq,var):
+subs(var1,L1):
+end:
+
+
+#NewGR2dP(M,N,L,U,R,B): Inputs positive integers M,N and symbols L,U,R,B where
+# MxN is a rectangle with L=left edge, U=top edge, R=right edge, B=bottom edge,
+# and outputs an (M-1) by (N-1) matrix whose entries are linear combinations
+# of L,U,R,B where the coefficient of L, for example, is the probability that
+# if you start at pt=[a,b] you end up on the left edge (L)
+NewGR2dP:=proc(M,N,L,U,R,B) local var,i, j, var1,var2, var3,eq,eq1,p,L1,temp:
+var:={seq(seq(p[i,j],i=0..M),j=0..N)}:
+
+#stores all necessary eqns
+eq:={}:
+
+for i from 0 to M-1 do
+ eq:=eq union {p[i,N]=U}:
+od:
+
+for i from 1 to M do
+ eq:=eq union {p[i,0]=B}:
+od:
+
+for j from 0 to N do
+ eq:=eq union {p[M,j]=R}:
+od:
+
+for j from 1 to N do
+ eq:=eq union {p[0,j]=L}:
+od:
+
+
+#var1 will store the variables d's
+var1:={}:
+for j from 1 to N-1 do 
+ eq:=[op(eq), p[1,j]=d[j]]:
+ var1:=var1 union {d[j]}:
+od:
+
+
+for i from 2 to M do
+ for j from 1 to N-1 do
+  temp:=4*p[i-1,j]-p[i-1,j-1]-p[i-1,j+1]-p[i-2,j]:
+  eq:=[op(eq),subs(eq,p[i,j]=temp)]:
+ od:
+od:
+
+#L1 stores the variables p[1],p[2],...,p[N-1]
+L1:=[seq([seq(p[i,j],j=1..N-1)],i=1..M-1)]:
+
+eq1:=[seq(eq[-i],i=1..N-1)]:
+var2:=solve(eq1,var1):
+var3:=subs(var2,eq):
+subs(var3,L1):
+end:
+
+
+#NewGR2dL(M,N): Inputs positive integers M,N and 
+# and outputs an (M-1) by (N-1) matrix M
+# such that M[a][b] is the expected life if the particle starts at pt=[a,b]
+NewGR2dL:=proc(M,N) local i, j, var1,var2, var3,eq,eq1,p,L,temp:
+#stores all necessary eqns
+eq:={}:
+for i from 0 to M do
+ eq:=eq union {p[i,0]=0}:
+ eq:=eq union {p[i,N]=0}:
+od:
+
+for j from 0 to N do
+ eq:=eq union {p[0,j]=0}:
+ eq:=eq union {p[M,j]=0}:
+od:
+
+
+#var1 will store the variables d's
+var1:={}:
+for j from 1 to N-1 do 
+ eq:=[op(eq),p[1,j]=d[j]]:
+ var1:=var1 union {d[j]}:
+od:
+
+
+for i from 2 to M do
+ for j from 1 to N-1 do
+  temp:=4*p[i-1,j]-p[i-1,j-1]-p[i-1,j+1]-p[i-2,j]-4:
+  eq:=[op(eq),subs(eq,p[i,j]=temp)]:
+ od:
+od:
+
+#L stores the variables p[i,j] for 1<=i<=M-1, 1<=j<=N-1
+L:=[seq([seq(p[i,j],j=1..N-1)],i=1..M-1)]:
+
+eq1:=[seq(eq[-i],i=1..N-1)]:
+var2:=solve(eq1,var1):
+var3:=subs(var2,eq):
+subs(var3,L):
+end:
+
+
+#NewGR2dF(M,N,t): Inputs positive integers M,N and outputs an (M-1) by (N-1)
+# matrix M such that M[a][b] is the probability generating function (pgf)
+# for duration if the particle starts at pt=[a,b]
+NewGR2dF:=proc(M,N,t) local i, j, var1,var2, var3,eq,eq1,p,L,temp:
+#stores all necessary eqns
+eq:={}:
+for i from 0 to M do
+ eq:=eq union {p[i,0]=1}:
+ eq:=eq union {p[i,N]=1}:
+od:
+
+for j from 0 to N do
+ eq:=eq union {p[0,j]=1}:
+ eq:=eq union {p[M,j]=1}:
+od:
+
+#var1 will store the variables d's
+var1:={}:
+for j from 1 to N-1 do 
+ eq:=[op(eq),p[1,j]=d[j]]:
+ var1:=var1 union {d[j]}:
+od:
+
+for i from 2 to M do
+ for j from 1 to N-1 do
+  temp:=4/t*p[i-1,j]-p[i-1,j-1]-p[i-1,j+1]-p[i-2,j]:
+  eq:=[op(eq),subs(eq,p[i,j]=temp)]:
+ od:
+od:
+
+#L stores the variables p[i,j] for 1<=i<=M-1, 1<=j<=N-1
+L:=[seq([seq(p[i,j],j=1..N-1)],i=1..M-1)]:
+eq1:=[seq(eq[-i],i=1..N-1)]:
+var2:=solve(eq1,var1):
+var3:=subs(var2,eq):
+normal(subs(var3,L)):
+end:
+
+
+
+#NewGR2dPG(M,N,L,U,R,B,P): Inputs positive integers M,N and symbols L,U,R,B where
+# MxN is a rectangle with L=left edge, U=top edge, R=right edge, B=bottom edge,
+# and a probability table P=[p_L,p_U,p_R,p_B] such that
+# the particle moves left by one step with probability p_L,
+# moves up by one step with probability p_U,
+# moves right by one step with probability p_R, and
+# moves down by one step with probability p_B,
+# and outputs an (M-1) by (N-1) matrix whose entries are linear combinations
+# of L,U,R,B where the coefficient of L, for example, is the probability that
+# if you start at pt=[a,b] you end up on the left edge (L)
+NewGR2dPG:=proc(M,N,L,U,R,B,P) local var,i, j, var1,var2, var3,eq,eq1,p,L1,temp:
+if add(i,i in P)<>1 then
+ print(`Sum of probabilities do not add up to 1`):
+ return(FAIL):
+fi:
+
+var:={seq(seq(p[i,j],i=0..M),j=0..N)}:
+
+#stores all necessary eqns
+eq:={}:
+
+for i from 0 to M-1 do
+ eq:=eq union {p[i,N]=U}:
+od:
+
+for i from 1 to M do
+ eq:=eq union {p[i,0]=B}:
+od:
+
+for j from 0 to N do
+ eq:=eq union {p[M,j]=R}:
+od:
+
+for j from 1 to N do
+ eq:=eq union {p[0,j]=L}:
+od:
+
+
+#var1 will store the variables d's
+var1:={}:
+for j from 1 to N-1 do 
+ eq:=[op(eq), p[1,j]=d[j]]:
+ var1:=var1 union {d[j]}:
+od:
+
+
+for i from 2 to M do
+ for j from 1 to N-1 do
+  temp:=1/P[3]*p[i-1,j]-(P[1]/P[3])*p[i-2,j]-(P[2]/P[3])*p[i-1,j+1]-(P[4]/P[3])*p[i-1,j-1]:
+  eq:=[op(eq),subs(eq,p[i,j]=temp)]:
+ od:
+od:
+
+#L1 stores the variables p[1],p[2],...,p[N-1]
+L1:=[seq([seq(p[i,j],j=1..N-1)],i=1..M-1)]:
+
+eq1:=[seq(eq[-i],i=1..N-1)]:
+var2:=solve(eq1,var1):
+var3:=subs(var2,eq):
+subs(var3,L1):
+end:
+
+
+
+#NewGR2dLG(M,N,P): Inputs positive integers M,N and a probability table P=[p_W,p_N,p_E,p_S]
+# such that the particle moves left by one step with probability p_W, 
+# moves up by one step with probability p_N,
+# moves right by one step with probability p_E, and
+# moves down by one step with probability p_S,
+# and outputs an (M-1) by (N-1) matrix M
+# such that M[a][b] is the expected life if the particle starts at pt=[a,b]
+NewGR2dLG:=proc(M,N,P) local i,j,eq,eq1,var1,var2,var3,temp,L:
+if add(i,i in P)<>1 then
+ print(`Sum of probabilities do not add up to 1`):
+ return(FAIL):
+fi:
+
+#stores all necessary eqns
+eq:={}:
+for i from 0 to M do
+ eq:=eq union {p[i,0]=0}:
+ eq:=eq union {p[i,N]=0}:
+od:
+
+for j from 0 to N do
+ eq:=eq union {p[0,j]=0}:
+ eq:=eq union {p[M,j]=0}:
+od:
+
+
+#var1 will store the variables d's
+var1:={}:
+for j from 1 to N-1 do 
+ eq:=[op(eq),p[1,j]=d[j]]:
+ var1:=var1 union {d[j]}:
+od:
+
+
+for i from 2 to M do
+ for j from 1 to N-1 do
+  temp:=1/P[3]*p[i-1,j]-(P[1]/P[3])*p[i-2,j]-(P[2]/P[3])*p[i-1,j+1]-(P[4]/P[3])*p[i-1,j-1]-1/P[3]:
+  eq:=[op(eq),subs(eq,p[i,j]=temp)]:
+ od:
+od:
+
+#L stores the variables p[i,j] for 1<=i<=M-1, 1<=j<=N-1
+L:=[seq([seq(p[i,j],j=1..N-1)],i=1..M-1)]:
+
+eq1:=[seq(eq[-i],i=1..N-1)]:
+var2:=solve(eq1,var1):
+var3:=subs(var2,eq):
+subs(var3,L):
+end:
+
+
+
+#used to be NewProb2dFG
+
+#NewGR2dFG(M,N,P,t): Inputs positive integers M,N and a probability table P=[p_L,p_U,p_R,p_B]
+# with p_L+p_U+p_R+p_B=1 such that the particle has the following options
+# moves left, by one step, with probability p_L,
+# moves up, by one step, with probability p_U,
+# moves right, by one step, with probability p_R, and
+# moves down, by one step, with probability p_B,
+# and outputs an (M-1) by (N-1) matrix M such that M[a][b] is the probability
+# generating function (pgf) for duration if the particle starts at pt=[a,b]
+NewGR2dFG:=proc(M,N,P,t)local i,j,eq,eq1,var1,var2,var3,temp,L:
+if add(i,i in P)<>1 then
+ print(`Sum of probabilities do not add up to 1`):
+ return(FAIL):
+fi:
+
+#stores all necessary eqns
+eq:={}:
+for i from 0 to M do
+ eq:=eq union {p[i,0]=1}:
+ eq:=eq union {p[i,N]=1}:
+od:
+
+for j from 0 to N do
+ eq:=eq union {p[0,j]=1}:
+ eq:=eq union {p[M,j]=1}:
+od:
+
+
+#var1 will store the variables d's
+var1:={}:
+for j from 1 to N-1 do 
+ eq:=[op(eq),p[1,j]=d[j]]:
+ var1:=var1 union {d[j]}:
+od:
+
+
+for i from 2 to M do
+ for j from 1 to N-1 do
+  temp:=1/(t*P[3])*p[i-1,j]-(P[1]/P[3])*p[i-2,j]-(P[2]/P[3])*p[i-1,j+1]-(P[4]/P[3])*p[i-1,j-1]:
+  eq:=[op(eq),subs(eq,p[i,j]=temp)]:
+ od:
+od:
+
+
+#L stores the variables p[i,j] for 1<=i<=M-1, 1<=j<=N-1
+L:=[seq([seq(p[i,j],j=1..N-1)],i=1..M-1)]:
+
+eq1:=[seq(eq[-i],i=1..N-1)]:
+var2:=solve(eq1,var1):
+var3:=subs(var2,eq):
+normal(subs(var3,L)):
+end:
+
+
+
+
+#KmetPetkovsek(N): Implements Kmet and Petkovsek's formula for the 
+# expected duration of the 2-dimensional Gambler's Ruin Game and it
+# sorts it. It uses evalf.
+KmetPetkovsek:=proc(N) local T,i,j,a,k,l,L:
+T:=[]:
+for i from 1 to N-1 do
+ for j from 1 to N-1 do
+  a:=4/N^2*add(sin((j*k*Pi)/(N))*cot((k*Pi)/(2*N))*add((sin(i*l*Pi/N)*cot(l*Pi/(2*N)))/((sin(k*Pi/(2*N)))^2+(sin(l*Pi/(2*N)))^2),l=1..N-1,2),k=1..N-1,2):
+  T:=[op(T),evalf(a)]:
+ od:
+od:
+L:=[seq([seq(T[i], i=(N-1)*(j-1)+1..(N-1)*j)], j=1..N-1)]
+end:
+
+
+#KmetPetkovsek2(N): Implements Kmet and Petkovsek's formula for the 
+# expected duration of the 2-dimensional Gambler's Ruin Game. This does not
+# sort the list into a list of lists.
+KmetPetkovsek2:=proc(N) local T,i,j,a,k,l,L:
+T:=[]:
+for i from 1 to N-1 do
+ for j from 1 to N-1 do
+  a:=4/N^2*add(sin((j*k*Pi)/(N))*cot((k*Pi)/(2*N))*add((sin(i*l*Pi/N)*cot(l*Pi/(2*N)))/((sin(k*Pi/(2*N)))^2+(sin(l*Pi/(2*N)))^2),l=1..N-1,2),k=1..N-1,2):
+  T:=[op(T),evalf(a)]:
+ od:
+od:
+T:
+end:
+
+
+#KmetPetkovsek1(N): Implements Kmet and Petkovsek's formula for the 
+# expected duration of the 2-dimensional Gambler's Ruin Game using simplify
+KmetPetkovsek1:=proc(N) local T,i,j,a,k,l,L:
+T:=[]:
+for i from 1 to N-1 do
+ for j from 1 to N-1 do
+  a:=4/N^2*add(sin((j*k*Pi)/(N))*cot((k*Pi)/(2*N))*add((sin(i*l*Pi/N)*cot(l*Pi/(2*N)))/((sin(k*Pi/(2*N)))^2+(sin(l*Pi/(2*N)))^2),l=1..N-1,2),k=1..N-1,2):
+  T:=[op(T),simplify(a)]:
+ od:
+od:
+L:=[seq([seq(T[i], i=(N-1)*(j-1)+1..(N-1)*j)], j=1..N-1)]:
+end:
+
+
+
+#GR2dMom2G(M,N,P): Inputs positive integers M,N 
+# and outputs a list of lists L of length (M-1)x(N-1) such that
+# L[x,y] is the second moment at (x,y)
+GR2dMom2G:=proc(M,N,P) local L,var,eq,i,j,n,ma,mi,L1,L2,s:
+
+L1:=NewGR2dLG(M,N,P):
+L:=[[0$N], seq([0, op(s),0], s in L1),[0$N]]:
+
+var:={seq(seq(b[i,j],j=0..N),i=0..M)}:
+
+
+#stores all necessary eqns
+eq:={}:
+for i from 0 to M do
+ eq:=eq union {b[i,0]=0}:
+ eq:=eq union {b[i,N]=0}:
+od:
+
+for j from 0 to N do
+ eq:=eq union {b[0,j]=0}:
+ eq:=eq union {b[M,j]=0}:
+od:
+
+#P=[p_W,p_N,p_E,p_S]
+for i from 1 to M-1 do
+ for j from 1 to N-1 do
+  eq:=eq union {b[i,j]-P[1]*b[i-1,j]-P[3]*b[i+1,j]-P[4]*b[i,j-1]-P[2]*b[i,j+1]=2*(P[1]*L[i-1+1,j+1]+P[3]*L[i+1+1,j+1]+P[4]*L[i+1,j-1+1]+P[2]*L[i+1,j+1+1]) }:
+  od:
+od:
+var:=solve(eq,var):
+L2:=subs(var,[seq([seq(b[i,j],j=1..N-1)],i=1..M-1)]):
+return L1+L2:
+end:
+
+
+#GR2dVG(M,N,P): Inputs positive integers M,N
+# and outputs a list of lists L of length (M-1)x(N-1)
+# such that L[x,y] is the variance at (x,y)
+GR2dVG:=proc(M,N,P) local L1,L2,i,j:
+L1:=GR2dMom2G(M,N,P):
+L2:=NewGR2dLG(M,N,P):
+[seq([seq(L1[i,j]-L2[i,j]^2,j=1..N-1)],i=1..M-1)]:
+end:
+
+#TestGR2dVG(M,N,P): tests GR2dVG(M,N,P)
+TestGR2dVG:=proc(M,N,P) local V,V1,M1,M2,t,L,i,j:
+L:=NewGR2dFG(M,N,P,t):
+M1:=[seq([seq(subs(t=1,diff(L[i,j],t)),j=1..N-1)],i=1..M-1)]:
+M2:=[seq([seq(subs(t=1,diff(t*diff(L[i,j],t),t)),j=1..N-1)],i=1..M-1)]:
+
+V:=[seq([seq(M2[i,j]-M1[i,j]^2,j=1..N-1)],i=1..M-1)]:
+V1:=GR2dVG(M,N,P):
+evalb(V=V1):
+end:
+
+

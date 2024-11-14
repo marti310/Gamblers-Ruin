@@ -1,0 +1,761 @@
+######################################################################
+## GGR.txt : Save this file as  GGR.txt to use it stay in the        #
+## same directory, get into Maple (by typing: maple <Enter> )        #
+#then type: read `GGR.txt`: <Enter>                                  #
+## Then follow the instructions given there                          #
+##                                                                   #
+## Written by  Lucy Martinez                      Rutgers University #
+######################################################################
+
+#VERSION OF November 08, 2024
+
+with(Statistics):
+
+
+print(`First Written:  Winter 2024: tested for Maple 20  `):
+print():
+print(`This is GGR.txt, a Maple package `):
+print(`accompanying Lucy Martinez's article: `):
+print(`A symbolic computational approach to the generalized gambler's ruin problem in one and two dimensions`):
+
+print(`-------------------------------`):
+
+print(`-------------------------------`):
+print():
+print(`The most current version is available at the url:`):
+print(` https://  `):
+print(`Please report all bugs to: lm1154@scarletmail.rutgers.edu  .`):
+print():
+print(`-------------------------------`):
+print(`For general help, and a list of the MAIN functions,`):
+print(` type "Help();". For specific help type "Help(procedure_name);" `):
+
+print(`-------------------------------`):
+print(`For a list of the supporting functions type:  Help1();`):
+print(`For help with a specific procedure, type "Help(procedure_name);"`):
+print():
+print(`-------------------------------`):
+
+
+Help1:=proc()
+if args=NULL then
+
+print(`The supporting procedures are: GR1, GR, ProbN, ExpN, GR1dF`):
+print(`GR2d1, GR2d, GR2dP, GR2dL, GR2dT, GR2dF`):
+print(`GR3d1, GR3d, GR3dP, GR3dL, GR3dT, GR3dF`):
+
+else
+ Help(args):
+fi:
+end:
+
+Help:=proc()
+
+if args=NULL then
+
+print(` GGR.txt: A Maple package for general gambler's ruin`):
+print(`The main procedures are: GR1, GR, ProbN,  ExpN, GR1dF`):
+print(`GR2d1, GR2d, GR2dP, GR2dL, GR2dT, GR2dF`):
+print(`GR3d1, GR3d, GR3dP, GR3dL, GR3dT, GR3dF`):
+
+
+elif nargs=1 and args[1]=ProbN then 
+print(`ProbN(N): Inputs a positive integer N and outputs a list L of length N-1 such that L[x] is the probability of exiting the casino with N dollars. Try:`):
+print(`ProbN(4); `):
+
+
+elif nargs=1 and args[1]=ExpN then 
+print(`ExpN(N): Inputs a positive integer N and outputs a list L of length N-1 such that L[x] is the expected duration in the Casino until exiting (either a loser or winner). Try:`):
+print(`ExpN(4); `):
+
+
+elif nargs=1 and args[1]=GR1dF then
+print(`GR1dF(N,t): Inputs a positive integer N and outputs a list L of length N-1 such that`):
+print(`L[x] is the probability generating function of the duration of the game if`):
+print(`the particle starts at 0<x<N. Try:`):
+print(`GR1dF(5,t); `):
+
+
+elif nargs=1 and args[1]=GR1 then 
+print(`GR1(x,N): Inputs integers x and N such that 0<=x<=N where x is the location on the discrete line of [0,N], and outputs a list of length two where the first element is 0 (loser) or 1 (winner), followed by the number of times it takes to exit the game. Try:`):
+print(`GR1(10,20); `):
+
+
+elif nargs=1 and args[1]=GR then 
+print(`GR(x,N,K): Inputs integers x,N,K, runs GR1(x,N) "K" times, and outputs the ratio of times where it exited a winner followed by the expected duration. Try:`):
+print(`GR(10,20,1000); `):
+
+
+elif nargs=1 and args[1]=GR2d1 then 
+print(`GR2d1(M,N,pt): Inputs positive integers M and N and pt=[x0,y0] where 0<x0<N, 0<y0<M`):
+print(`with probability 1/4 it goes left, with probability 1/4 it goes up, `):
+print(`with probability 1/4 it goes right, or with probability 1/4 it goes down, `):
+print(`until it hits the boundary (left, top, right, or bottom), `):
+print(`and outputs which part of the boundary, followed by the number of steps. Try:`):
+print(`GR2d1(10,10,[5,4]); `):
+
+
+elif nargs=1 and args[1]=GR2d then 
+print(`GR2d(M,N,pt,K): Inputs positive integers M and N, and pt=[x0,y0] where 0<x0<M, 0<y0<N,`):
+print(`runs GR2d1(M,N,pt) "K" times, and outputs a list L of length 4 such that`):
+print(`L[1] is the fraction of times it finished on the left`):
+print(`L[2] is the fraction of times it finished on the top`):
+print(`L[3] is the fraction of times it finished on the right`):
+print(`L[4] is the fraction of times it finished on the bottom`):
+print(`followed by the average number of moves. Try:`):
+print(`GR2d(10,10,[5,5],1000); `):
+
+
+elif nargs=1 and args[1]=GR2dT then 
+print(`GR2dT(M,N,pt,K,t): Inputs positive integers M and N, and pt=[x0,y0] where 0<x0<M, 0<y0<N,`):
+print(`runs GR2d1(M,N,pt) "K" times, and outputs the duration generating function`):
+print(`of the average number of moves. Try:`):
+print(`GR2dT(10,10,[5,5],1000,t); `):
+
+
+elif nargs=1 and args[1]=GR2dP then
+print(`GR2dP(M,N,L,U,R,B): Inputs positive integers M,N and symbols L,U,R,B where`):
+print(`MxN is a rectangle with L=left edge, U=top edge, R=right edge, B=bottom edge,`):
+print(`and outputs an (M-1) by (N-1) matrix whose entries are linear combinations`):
+print(`of L,U,R,B where the coefficient of L, for example, is the probability that`):
+print(`if you start at pt=[a,b] you end up on the left edge (L). Try:`):
+print(`GR2dP(10,10,L,U,R,B); `):
+
+# Here, if A:=GR2dP(10,10,L,U,R,B) then A[5,5] should be close to GR2d(10,10,[5,5],K)
+
+elif nargs=1 and args[1]=GR2dL then
+print(`GR2dL(M,N): Inputs positive integers M,N and outputs an (M-1) by (N-1) matrix M`):
+print(`such that M[a][b] is the expected life if the particle starts at pt=[a,b].`):
+print(`GR2dL(M,N)[a,b] should be close to GR2d(M,N,pt,K) for pt=[a,b]. Try:`):
+print(`GR2dL(10,10); `):
+
+
+elif nargs=1 and args[1]=GR2dF then
+print(`GR2dF(M,N,t): Inputs positive integers M,N and outputs an (M-1) by (N-1) matrix M `):
+print(`such that M[a][b] is the probability generating function (pgf)`):
+print(`for duration if the particle starts at pt=[a,b]. Try:`):
+print(`GR2dF(10,10,t); `):
+
+
+elif nargs=1 and args[1]=GR2dRec then
+print(`GR2dRec(N): Inputs positive integer N>=2, and constructs`):
+print(`N-1 recurrence relations where each recurrence relation, a_j(i)`):
+print(`corresponds to starting at (i,j) level on the N by M rectangle`):
+print(`and outputs each solution for each recurrence in terms of M only`):
+
+elif nargs=1 and args[1]=GR3d1 then
+print(`GR3d1(M1,M2,M3,pt): Inputs positive integers M1,M2,M3, and a point, pt, such that`):
+print(`0<pt[1]<M1, 0<pt[2]<M2, 0<pt[3]<M3 and does a random walk with probability 1/6`):
+print(`of going in each direction and stops once it hits a wall, the roof or the floor,`): 
+print(`outputs which part of the wall it ended, followed by the number of steps. Try:`):
+print(`GR3d1(5,5,5,[3,3,3]); `):
+
+
+elif nargs=1 and args[1]=GR3d then
+print(`GR3d(M1,M2,M3,pt,K): Inputs positive integers M1,M2,M3, a point pt, where`):
+print(`0<pt[1]<M1, 0<pt[2]<M2, 0<pt[3]<M3, runs GR3d1(M1,M2,M3,pt) "K" times, and outputs`):
+print(`a list L of length 6 such that`):
+print(`L[1] is the fraction of times it finished on the west wall, `):
+print(`L[2] is the fraction of times it finished on the north wall, `):
+print(`L[3] is the fraction of times it finished on the east wall, `):
+print(`L[4] is the fraction of times it finished on the south wall, `):
+print(`L[5] is the fraction of times it finished on the roof, and`):
+print(`L[6] is the fraction of times it finished on the floor,`):
+print(`followed by the average number of moves. Try:`):
+print(`GR3d(5,5,5,[3,3,3],1000); `):
+
+
+elif nargs=1 and args[1]=GR3dP then
+print(`GR3dP(M1,M2,M3,W,N,E,S,R,F): Inputs positive integers M1, M2, M3 and symbols`):
+print(`W,N,E,S,R,F where M1xM2xM3 is a cube with W=West wall, N=North wall, E=East wall,`):
+print(`S=South wall, R=Roof, F=Floor, and outputs a list of lists of lists whose entries`):
+print(`are linear combinations of W,N,E,S,R,F, where the coefficient of W, for example,`):
+print(`is the probability that if you start at [i,j,k] you end up on the west wall (W). Try:`):
+print(`GR3dP(5,5,5,W,N,E,S,R,F); `):
+
+
+elif nargs=1 and args[1]=GR3dL then
+print(`GR3dL(M1,M2,M3): Inputs positive integers M1, M2, M3 and outputs a list of lists of lists L such that`):
+print(`L[i][j][k] is the exact expected life of a particle starting at the point pt=[i,j,k]. Try:`):
+print(`GR3dL(5,5,5); `):
+
+
+elif nargs=1 and args[1]=GR3dT then
+print(`GR3dT(M1,M2,M3,pt,K,t): Inputs positive integers M1, M2, M3, and pt=[i,j,k] where 0<i<M1, 0<j<M2, 0<k<M3,`):
+print(`runs GR3d1(M1,M2,M3,pt) "K" times, and outputs the duration generating function`):
+print(`of the average number of moves. Try:`):
+print(`GR3dT(5,5,5,[3,3,3],1000,t); `):
+
+
+elif nargs=1 and args[1]=GR3dF then
+print(`GR3dF(M1,M2,M3,t): Inputs positive integers M1,M2,M3, and outputs a list of lists of lists L`):
+print(`such that L[i][j][k] is the probability generating function (pgf)`):
+print(`for duration if the particle starts at pt=[i,j,k]. Try:`):
+print(`GR3dF(5,5,5,t); `):
+
+
+else
+ print(`There is no such thing as`, args):
+fi:
+
+end: 
+
+###############################
+#ProbN(N): Inputs a positive integer N and outputs a list L of length N-1 such that L[x] 
+# is the probability of exiting the casino with N dollars
+ProbN:=proc(N) local f,eq,i,var:
+var:={seq(f[i],i=0..N)}:
+eq:={f[0]=0,f[N]=1}:
+
+for i from 1 to N-1 do
+ eq:=eq union {f[i]=1/2*f[i-1]+1/2*f[i+1]}:
+od:
+var:=solve(eq,var):
+subs(var,[seq(f[i],i=1..N-1)]):
+end:
+
+
+#ExpN(N): Inputs a positive integer N and outputs a list L of length N-1 such that
+# L[x] is the expected duration in the Casino until exiting (either a loser or winner)
+ExpN:=proc(N) local f, eq, i,var:
+var:={seq(f[i],i=0..N)}:
+eq:={f[0]=0,f[N]=0}:
+
+for i from 1 to N-1 do
+ eq:=eq union {f[i]=1/2*f[i-1]+1/2*f[i+1]+1}:
+od:
+var:=solve(eq,var):
+subs(var,[seq(f[i],i=1..N-1)]):
+end:
+
+
+#GR1dF(N,t): Inputs a positive integer N and outputs a list L of length N-1 such that L[x] 
+# is the probability generating function of the duration of the game
+# NOTE: ExpN(N)[i] = subs(t=1,diff(GR1dF(3,t)[i],t))
+GR1dF:=proc(N,t) local f,eq,i,var:
+var:={seq(f[i],i=0..N)}:
+eq:={f[0]=1,f[N]=1}:
+
+for i from 1 to N-1 do
+ eq:=eq union {f[i]=t/2*(f[i-1]+f[i+1])}:
+od:
+var:=solve(eq,var):
+subs(var,[seq(f[i],i=1..N-1)]):
+end:
+
+
+#GR1(x,N): Inputs integers x and N such that 0<=x<=N where x is the location on 
+# the discrete line of [0,N], and outputs a list of length two where the first element
+# is 0 (loser) or 1 (winner), followed by the number of times it takes to exit the game
+GR1:=proc(x,N) local i,r,t:
+t:=x:
+for i from 1 while not (t=0 or t=N) do
+ # generate a random real number between 0 and 1
+ r:=rand(0.0..1.0)():
+ if r<=1/2 then
+  t:=t-1:
+ else
+  t:=t+1:
+ fi:
+od:
+# if t=N then that means the particle reached (N,0), 
+# else if t=0 then the particle reached (0,0)
+if t=N then
+ return [1,i-1]:
+else
+ return [0,i-1]:
+fi:
+end:
+
+
+#GR(x,N,K): Inputs integers x,N,K, runs GR1(x,N) "K" times, and outputs
+# the ratio of times where it exited a winner followed by the expected duration
+GR:=proc(x,N,K) local co,L,i,co1:
+co:=0:
+co1:=0:
+for i from 1 to K do
+ L:=GR1(x,N):
+ co1:=co1+L[2]:
+ if L[1]=1 then
+  co:=co+1:
+ fi:
+od:
+evalf([co/K,co1/K]):
+end:
+
+
+#GR2d1(M,N,pt): Inputs pos. integers M and N and pt=[x0,y0] where
+# 0<x0<M, 0<y0<N with prob. 1/4 it goes up, with prob. 1/4 it goes down,
+# with prob. 1/4 it goes left, or with prob. 1/4 it goes right, until it hits the boundary,
+# and outputs which part of the boundary, followed by the number of steps
+GR2d1:=proc(M,N,pt) local p,i,ra,S,t:
+p:=pt:
+
+if M<=0 then 
+ return(`M must be positive`):
+elif N<=0 then
+ return(`N must be positive`):
+elif p[1]<=0 or p[1]>=M then
+ return(`The first coordinate of pt must be between 0 and M`):
+elif p[2]<=0 or p[2]>=N then
+ return(`The second coordinate of pt must be between 0 and N`):
+fi:
+# [-1,0]=left, [0,1]=top, [1,0]=right, [0,-1]=bottom
+S:=[[-1,0], [0,1],[1,0],[0,-1]]:
+
+for i from 1 while not (p[1]=0 or p[1]=M or p[2]=N or p[2]=0) do
+ ra:=rand(1..4)():
+
+ # 1 = S[1] = [-1,0]
+ if ra=1 then
+  p:=[p[1]-1,p[2]]:
+
+ # 2 = S[2] = [0,1]
+ elif ra=2 then
+  p:=[p[1],p[2]+1]:
+
+ # 3 = S[3] = [1,0]
+ elif ra=3 then
+  p:=[p[1]+1,p[2]]:
+
+ # 4 =  S[4] = [0,-1]
+ elif ra=4 then
+  p:=[p[1],p[2]-1]:
+ fi:
+od:
+
+[p,i-1]:
+end:
+
+
+#GR2d(M,N,pt,K): Inputs pos. integers M and N and pt=[x0,y0] where 0<x0<M, 0<y0<N,
+# runs GR2d1(M,N,pt) "K" times, and outputs a list L of length 4 such that
+# L[1] is the fraction of times it finished on the left
+# L[2] is the fraction of times it finished on the top
+# L[3] is the fraction of times it finished on the right
+# L[4] is the fraction of times it finished on the bottom
+# followed by the average number of moves
+# This is simulation for the percentages, and the expected number of steps
+GR2d:=proc(M,N,pt,K) local L1,L2,co,i:
+L1:=[0$4]:
+co:=0:
+for i from 1 to K do
+ L2:=GR2d1(M,N,pt):
+
+ # add each number of steps it took for the particle to reach the
+ # boundary from round 1 to round K
+ # (there are K trials, in each trial, add the number of steps it takes to reach 
+ #  any of the edges on the boundary)
+ co:=co+L2[2]:
+
+ #L1[1] is the fraction of times it finished on the left
+ if L2[1][1]=0 and 0<=L2[1][2] and L2[1][2]<=N then
+  L1[1]:=L1[1]+1:
+
+ # L1[2] is the fraction of times it finished on the top
+ elif L2[1][2]=N and 0<=L2[1][1] and L2[1][1]<=M then
+  L1[2]:=L1[2]+1:
+ 
+ # L1[3] is the fraction of times it finished on the right
+ elif L2[1][1]=M and 0<=L2[1][2] and L2[1][2]<=N then
+  L1[3]:=L1[3]+1:
+
+ # L1[4] is the fraction of times it finished on the bottom
+ elif L2[1][2]=0 and 0<=L2[1][1] and L2[1][1]<=M then
+  L1[4]:=L1[4]+1:
+ fi:
+od:
+evalf([L1/K,co/K]):
+end:
+
+
+# Using simulation, GR2dT(M,N,pt,K,t) outputs the generating function for the number of expected steps
+# Derivative at t=1 should be close to the output of GR2d(M,N,pt,K)[2]
+# In addition, GR2dL(M,N)[pt] is the exact expected number of steps and the two previous results
+# should be close to GR2dL(M,N)[pt]
+
+
+#GR2dT(M,N,pt,K,t): Inputs pos. integers M and N, and pt=[x0,y0] where 0<x0<M, 0<y0<N,
+# runs GR2d1(M,N,pt) "K" times, and outputs the duration generating function of the 
+# average number of moves
+GR2dT:=proc(M,N,pt,K,t) local L1,L2,co,i:
+L1:=[0$4]:
+co:=0:
+for i from 1 to K do
+ L2:=GR2d1(M,N,pt):
+ co:=co+t^(L2[2]):
+
+ # the exponent of t is the number of steps it took for the particle to reach the
+ # boundary in one round, and the coefficient is the average number of moves
+ # i.e f(t)=1/K*Sum(t^duration) over all trials
+od:
+evalf(co/K):
+end:
+
+
+# The elements in GR2d(M,N,pt,K)[1] should be close to the coeffs of GR2dP(M,N,L,U,R,B)[pt]
+
+#GR2dP(M,N,L,U,R,B): Inputs positive integers M,N and symbols L,U,R,B
+# where MxN is a rectangle with L=left edge, U=top edge, R=right edge, B=bottom edge,
+# and outputs an (M-1) by (N-1) matrix whose entries are linear combinations
+# of L,U,R,B where the coefficient of L, for example, is the probability that 
+# if you start at pt=[a,b] you end up on the left edge (L)
+GR2dP:=proc(M,N,L,U,R,B) local var,eq,i,j,var1,L1:
+var:={seq(seq(p[i,j],i=0..M),j=0..N)}:
+eq:={}:
+
+# set each pt on each edge equal to the symbol on the edge so that we distinguish
+# pts on left, top, right or bottom edge
+
+for i from 1 to M-1 do
+ eq:=eq union {p[i,N]=U}:
+ eq:=eq union {p[i,0]=B}:
+od:
+
+for j from 1 to N-1 do
+ eq:=eq union {p[0,j]=L}:
+ eq:=eq union {p[M,j]=R}:
+od:
+
+for i from 1 to M-1 do
+ for j from 1 to N-1 do
+  eq:=[op(eq),p[i,j]=1/4*(p[i+1,j]+p[i-1,j]+p[i,j+1]+p[i,j-1])]:
+ od:
+od:
+L1:=[seq([seq(p[i,j],j=1..N-1)],i=1..M-1)]:
+var1:=solve(eq,var):
+subs(var1,L1):
+end:
+
+
+#GR2dL(M,N) gives the exact expected number of steps for all pts in the M by N rectangle
+#NOTE: subs(t=1, diff(GR2dF(M,N,L,U,R,B)[pt],t)) should be the same as GR2dL(M,N)[pt]
+
+
+#GR2dL(M,N): Inputs positive integers M,N and outputs an (M-1) by (N-1) matrix M
+# such that M[a][b] is the expected life if the particle starts at pt=[a,b]
+GR2dL:=proc(M,N) local var,eq,i,j,var1,L1:
+var:={seq(seq(p[i,j],i=0..M),j=0..N)}:
+eq:={}:
+
+# set each expected life on each pt on the boundary = 0 since the expected number of 
+# steps to get to the boundary if we are on the boundary already is 0
+for i from 1 to M-1 do
+ eq:=eq union {p[i,N]=0}:
+ eq:=eq union {p[i,0]=0}:
+od:
+
+for j from 1 to N-1 do
+ eq:=eq union {p[0,j]=0}:
+ eq:=eq union {p[M,j]=0}:
+od:
+
+for i from 1 to M-1 do
+ for j from 1 to N-1 do
+  eq:=[op(eq),p[i,j]=1/4*(p[i+1,j]+p[i-1,j]+p[i,j+1]+p[i,j-1])+1]:
+ od:
+od:
+L1:=[seq([seq(p[i,j],j=1..N-1)],i=1..M-1)]:
+var1:=solve(eq,var):
+subs(var1,L1):
+end:
+
+
+#GR2dF(M,N,t): Inputs positive integers M,N and outputs an (M-1) by (N-1) matrix M
+# such that M[a][b] is the probability generating function (pgf)
+# for duration if the particle starts at pt=[a,b]
+#NOTE: subs(t=1, diff(GR2dF(M,N,t)[pt],t)) should be the same as GR2dL(M,N)[pt]
+GR2dF:=proc(M,N,t) local var,eq,i,j,var1,L1:
+var:={seq(seq(p[i,j],i=0..M),j=0..N)}:
+eq:={}:
+
+# set each prob. on each of the pts in the boundary = 1
+# since if we are in the boundary, the prob to reach the boundary is 1
+for i from 1 to M-1 do
+ eq:=eq union {p[i,N]=1}:
+ eq:=eq union {p[i,0]=1}:
+od:
+
+for j from 1 to N-1 do
+ eq:=eq union {p[0,j]=1}:
+ eq:=eq union {p[M,j]=1}:
+od:
+
+for i from 1 to M-1 do
+ for j from 1 to N-1 do
+  eq:=[op(eq),p[i,j]=t/4*(p[i+1,j]+p[i-1,j]+p[i,j+1]+p[i,j-1])]:
+ od:
+od:
+L1:=[seq([seq(p[i,j],j=1..N-1)],i=1..M-1)]:
+var1:=solve(eq,var):
+subs(var1,L1):
+end:
+
+
+#GR3d1(M1,M2,M3,pt): Inputs positive integers M1,M2,M3, and a point, pt, such that
+# 0<pt[1]<M1, 0<pt[2]<M2, 0<pt[3]<M3 and does a random walk with prob. 1/6 
+# of going in each direction and stops once it hits a wall, the roof or the floor,
+# outputs which part of the wall it ended, followed by the number of steps
+GR3d1:=proc(M1,M2,M3,pt) local p,S,i,ra:
+p:=pt:
+if M1<=0 then 
+ return(`M1 must be positive`):
+elif M2<=0 then
+ return(`M2 must be positive`):
+elif p[1]<=0 or p[1]>=M1 then
+ return(`The first coordinate of pt must be between 0 and M1`):
+elif p[2]<=0 or p[2]>=M2 then
+ return(`The second coordinate of pt must be between 0 and M2`):
+elif p[3]<=0 or p[2]>=M3 then
+ return(`The third coordinate of pt must be between 0 and M3`):
+fi:
+
+# [-1,0,0]=west wall, [0,1,0]=north wall,  [1,0,0]=east wall, [0,-1,0]=south wall
+# [0,0,1]=roof, [0,0,-1]=floor
+S:=[[-1,0,0], [0,1,0], [1,0,0], [0,-1,0], [0,0,1], [0,0,-1]]:
+
+for i from 1 while not (p[1]=0 or p[1]=M1 or p[2]=0 or p[2]=M2 or p[3]=0 or p[3]=M3) do
+ ra:=rand(1..6)():
+ 
+ # 1 = S[1] = [-1,0,0]
+ if ra=1 then
+  p:=[p[1]-1, p[2], p[3]]:
+
+ # 2 = S[2] = [0,1,0]
+ elif ra=2 then
+  p:=[p[1], p[2]+1, p[3]]:
+
+ # 3 = S[3] = [1,0,0]
+ elif ra=3 then
+  p:=[p[1]+1, p[2], p[3]]:
+
+ # 4 = S[4] = [0,-1,0]
+ elif ra=4 then
+  p:=[p[1], p[2]-1, p[3]]:
+
+ # 5 = S[5] = [0,0,1]
+ elif ra=5 then
+  p:=[p[1], p[2], p[3]+1]:
+
+ # 6 = S[6] = [0,0,-1]
+ elif ra=6 then
+  p:=[p[1], p[2], p[3]-1]:
+ fi:
+od:
+
+[p,i-1]:
+end:
+
+
+#GR3d(M1,M2,M3,pt,K): Inputs positive integers M1,M2,M3, a point pt, where
+# 0<pt[1]<M1, 0<pt[2]<M2, 0<pt[3]<M3, runs GR3d1(M1,M2,M3,pt) "K" times, and outputs
+# a list L of length 6 such that
+# L[1] is the fraction of times it finished on the west wall
+# L[2] is the fraction of times it finished on the north wall
+# L[3] is the fraction of times it finished on the east wall
+# L[4] is the fraction of times it finished on the south wall
+# L[5] is the fraction of times it finished on the roof
+# L[6] is the fraction of times it finished on the floor
+# followed by the average number of moves
+GR3d:=proc(M1,M2,M3,pt,K) local L1,L2,co,i:
+L1:=[0$6]:
+co:=0:
+for i from 1 to K do
+ L2:=GR3d1(M1,M2,M3,pt):
+ co:=co+L2[2]:
+
+ # L1[1] is the fraction of times it finished on the west wall
+ if L2[1][1]=0 and 0<=L2[1][2] and L2[1][2]<=M2 and 0<=L2[1][3] and L2[1][3]<=M3 then
+  L1[1]:=L1[1]+1:
+ # L1[2] is the fraction of times it finished on the north wall
+ elif 0<=L2[1][1] and L2[1][1]<=M1 and L2[1][2]=M2 and 0<=L2[1][3] and L2[1][3]<=M3 then
+  L1[2]:=L1[2]+1:
+ # L1[3] is the fraction of times it finished on the east wall
+ elif L2[1][1]=M1 and 0<=L2[1][2] and L2[1][2]<=M2 and 0<=L2[1][3] and L2[1][3]<=M3 then
+  L1[3]:=L1[3]+1:
+ # L1[4] is the fraction of times it finished on the south wall
+ elif 0<=L2[1][1] and L2[1][1]<=M1 and L2[1][2]=0 and 0<=L2[1][3] and L2[1][3]<=M3 then
+  L1[4]:=L1[4]+1:
+ # L1[5] is the fraction of times it finished on the roof
+ elif 0<=L2[1][1] and L2[1][1]<=M1 and 0<=L2[1][2] and L2[1][2]<=M2 and L2[1][3]=M3 then
+  L1[5]:=L1[5]+1:
+ # L1[6] is the fraction of times it finished on the floor
+ elif 0<=L2[1][1] and L2[1][1]<=M1 and 0<=L2[1][2] and L2[1][2]<=M2 and L2[1][3]=0 then
+  L1[6]:=L1[6]+1:
+ fi: 
+od:
+evalf([L1/K,co/K]):
+end:
+
+
+#GR3dP(M1,M2,M3,W,N,E,S,R,F): Inputs positive integers M1, M2, M3 and
+# symbols W,N,E,S,R,F where M1xM2xM3 is a cube with W=West wall, N=North wall, E=East wall,
+# S=South wall, R=Roof, F=Floor, and outputs a list of lists whose entries are
+# linear combinations of W,N,E,S,R,F, where the coefficient of W, for example, 
+# is the probability that if you start at [i,j,k] you end up on the west wall (W)
+GR3dP:=proc(M1,M2,M3,W,N,E,S,R,F) local var, eq, i,j,k,var1,L1:
+var:={seq(seq(seq(p[i,j,k],i=0..M1),j=0..M2),k=0..M3)}:
+eq:={}:
+
+# sets each probability based on each of the pts on the west or east walls equal to their 
+# corresponding symbol W (west) or E (east)
+for i from 1 to M2-1 do
+ for j from 1 to M3-1 do
+  eq:=eq union {p[0,i,j]=W}:
+  eq:=eq union {p[M1,i,j]=E}:
+ od:
+od:
+
+# sets each probability based on each of the pts on the north or south walls equal to their 
+# corresponding symbol N (north) or S (south)
+for i from 1 to M1-1 do
+ for j from 1 to M3-1 do
+  eq:=eq union {p[i,M2,j]=N}:
+  eq:=eq union {p[i,0,j]=S}:
+ od:
+od:
+
+# sets each probability based on each of the pts on the roof or floor equal to their 
+# corresponding symbol R (roof) or F (floor)
+for i from 1 to M1-1 do
+ for j from 1 to M2-1 do
+  eq:=eq union {p[i,j,M3]=R}:
+  eq:=eq union {p[i,j,0]=F}:
+ od:
+od:
+
+for i from 1 to M1-1 do
+ for j from 1 to M2-1 do
+  for k from 1 to M3-1 do
+   eq:=[op(eq),p[i,j,k]=1/6*(p[i+1,j,k]+p[i-1,j,k]+p[i,j+1,k]+p[i,j-1,k]+p[i,j,k+1]+p[i,j,k-1])]:
+  od:
+ od:
+od:
+L1:=[seq([seq([seq(p[i,j,k],k=1..M3-1 )],j=1..M2-1 ) ], i=1..M1-1)]:
+var1:=solve(eq,var):
+subs(var1,L1):
+end:
+
+
+#GR3dL(M1,M2,M3): Inputs positive integers M1, M2, M3 and outputs a list of lists of lists L such that
+# L[i][j][k] is the exact expected life of a particle starting at the point pt=[i,j,k]
+GR3dL:=proc(M1,M2,M3) local var, eq, i,j,k,var1,L:
+var:={seq(seq(seq(p[i,j,k],i=0..M1),j=0..M2),k=0..M3)}:
+eq:={}:
+
+# sets each pt on the west or east wall equal to zero as the particle has reached a wall
+# this is building on the expected number of steps
+for i from 1 to M2-1 do
+ for j from 1 to M3-1 do
+  eq:=eq union {p[0,i,j]=0}:
+  eq:=eq union {p[M1,i,j]=0}:
+ od:
+od:
+
+# sets each pt on the south or north wall equal to zero as the particle has reached a wall
+for i from 1 to M1-1 do
+ for j from 1 to M3-1 do
+  eq:=eq union {p[i,0,j]=0}:
+  eq:=eq union {p[i,M2,j]=0}:
+ od:
+od:
+
+# sets each pt on the floor or roof equal to zero as the particle has reached a wall
+for i from 1 to M1-1 do
+ for j from 1 to M2-1 do
+  eq:=eq union {p[i,j,0]=0}:
+  eq:=eq union {p[i,j,M3]=0}:
+ od:
+od:
+
+# sets each pt inside the box (not included any of the walls) equal to its expected number of steps
+# using a recursive formula
+for i from 1 to M1-1 do
+ for j from 1 to M2-1 do
+  for k from 1 to M3-1 do
+   eq:=[op(eq),p[i,j,k]=1/6*(p[i+1,j,k]+p[i-1,j,k]+p[i,j+1,k]+p[i,j-1,k]+p[i,j,k+1]+p[i,j,k-1])+1]:
+  od:
+ od:
+od:
+
+L:=[seq([seq([seq(p[i,j,k],k=1..M3-1 )],j=1..M2-1 ) ], i=1..M1-1)]:
+var1:solve(eq,var):
+subs(var1,L):
+end:
+
+
+#GR3dT(M1,M2,M3,pt,K,t): Inputs positive integers M1, M2, M3, and pt=[i,j,k] where 0<i<M1, 0<j<M2, 0<k<M3
+# runs GR3d1(M1,M2,M3,pt) "K" times, and outputs the duration generating function of the 
+# average number of moves
+GR3dT:=proc(M1,M2,M3,pt,K,t) local L1, L2, co, i:
+L1:=[0$6]:
+co:=0:
+for i from 1 to K do
+ L2:=GR3d1(M1,M2,M3,pt):
+ co:=co+t^(L2[2]):
+od:
+evalf(co/K):
+end:
+
+
+# GR3dF(M1,M2,M3,t): Inputs positive integers M1,M2,M3, and outputs a list of lists of lists L
+# such that L[i][j][k] is the probability generating function (pgf)
+# for duration if the particle starts at pt=[i,j,k]
+GR3dF:=proc(M1,M2,M3,t) local var,eq,i,j,k,var1,L:
+var:={seq(seq(seq(p[i,j,k],i=0..M1),j=0..M2),k=0..M3)}:
+eq:={}:
+
+# sets each pt on the west or east wall equal to one as this is the probability that the particle has reached a wall
+for i from 1 to M2-1 do
+ for j from 1 to M3-1 do
+  eq:=eq union {p[0,i,j]=1}:
+  eq:=eq union {p[M1,i,j]=1}:
+ od:
+od:
+
+# sets each pt on the south or north wall equal to one as this is the probability that the particle has reached a wall
+for i from 1 to M1-1 do
+ for j from 1 to M3-1 do
+  eq:=eq union {p[i,0,j]=1}:
+  eq:=eq union {p[i,M2,j]=1}:
+ od:
+od:
+
+# sets each pt on the floor or roof wall equal to one as this is the probability that the particle has reached a wall
+for i from 1 to M1-1 do
+ for j from 1 to M2-1 do
+  eq:=eq union {p[i,j,0]=1}:
+  eq:=eq union {p[i,j,M3]=1}:
+ od:
+od:
+
+# sets each pt inside the box (not included any of the walls) equal to its probability recursive relation pgf
+for i from 1 to M1-1 do
+ for j from 1 to M2-1 do
+  for k from 1 to M3-1 do
+   eq:=[op(eq),p[i,j,k]=t/6*(p[i+1,j,k]+p[i-1,j,k]+p[i,j+1,k]+p[i,j-1,k]+p[i,j,k+1]+p[i,j,k-1])]:
+  od:
+ od:
+od:
+
+L:=[seq([seq([seq(p[i,j,k],k=1..M3-1 )],j=1..M2-1 ) ], i=1..M1-1)]:
+var1:=solve(eq,var):
+subs(var1,L):
+end:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
